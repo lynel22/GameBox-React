@@ -1,4 +1,5 @@
 import { useState } from "react";
+import React from "react";
 import {
   Container,
   Box,
@@ -6,7 +7,11 @@ import {
   Button,
   Typography,
   Paper,
+  IconButton ,
+  InputAdornment,
 } from "@mui/material";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import axios from "axios";
 
 export default function Login() {
@@ -14,16 +19,24 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  const handleMouseUpPassword = (event) => {
+    event.preventDefault();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Cambia la URL por la de tu backend Spring Boot
-      const response = await axios.post("http://localhost:8080/api/auth/login", {
-        username,
-        password,
-      });
-
+      
+      const response = await login({ username, password });
       const token = response.data.token;
       localStorage.setItem("token", token);
 
@@ -35,24 +48,41 @@ export default function Login() {
   };
 
   return (
-    <Container maxWidth="xs">
-      <Paper elevation={3} sx={{ padding: 4, mt: 8 }}>
+    <Container maxWidth="sm">
+      <Paper elevation={3} sx={{ padding: 4, mt: 8}}>
         <Typography variant="h5" textAlign="center" gutterBottom>
-          Iniciar Sesión
+          Inicio de Sesión
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <TextField
             margin="normal"
             fullWidth
-            label="Usuario"
+            required
+            label="Nombre de usuario"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
             margin="normal"
             fullWidth
+            required
             label="Contraseña"
             type="password"
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label={
+                    showPassword ? 'hide the password' : 'display the password'
+                  }
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  onMouseUp={handleMouseUpPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -67,7 +97,7 @@ export default function Login() {
             variant="contained"
             sx={{ mt: 3 }}
           >
-            Entrar
+            Iniciar Sesión
           </Button>
         </Box>
       </Paper>
