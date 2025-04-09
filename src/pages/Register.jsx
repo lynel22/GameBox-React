@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
+import Avatar from '@mui/material/Avatar';
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -21,6 +21,8 @@ import { register } from "../api/auth"; // Suponiendo que tienes una función re
 
 export default function Register() {
   const [avatar, setAvatar] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -39,7 +41,11 @@ export default function Register() {
   };
 
   const handleImageChange = (e) => {
-    setAvatar(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setAvatar(file);
+      setAvatarPreview(URL.createObjectURL(file)); // Esto genera un preview temporal
+    }
   };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -72,18 +78,22 @@ export default function Register() {
 
   return (
     <Container maxWidth="sm">
-      <Paper elevation={3} sx={{ padding: 4, mt: 8 }}>
-        <Typography variant="h5" textAlign="center" gutterBottom>
-          Crear Cuenta
-        </Typography>
+      <Paper elevation={20} sx={{ padding: 4 }}>
+        
         <Box component="form" onSubmit={handleSubmit} noValidate>
-            <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ marginTop: "16px" }}
-                required 
-            />
+            <Box display="flex" alignItems="end" gap={2} marginTop={2} marginBottom={2}>
+                <Avatar
+                    alt="Avatar de usuario"
+                    src={avatarPreview || "https://via.placeholder.com/150"}
+                    sx={{ width: 100, height: 100 }}
+                />
+                <input paddingBottom={2}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    required
+                />
+            </Box>
 
           <TextField
             margin="normal"
