@@ -82,6 +82,7 @@ button:focus-visible {
 .MuiInputBase-input,
 .MuiInputLabel-root {
   color: var(--text-primary) !important;
+  border-radius: 8px !important;
 }
 
 /* Placeholder también blanco */
@@ -97,13 +98,29 @@ button:focus-visible {
 
 /* Label del input cuando está enfocado */
 .Mui-focused .MuiInputLabel-root {
-  color: var(--color-primary) !important;
+  color: white !important;
 }
 
 /* Borde del input cuando está enfocado */
 .Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: var(--color-primary) !important;
+  border-color: #5e80c8 !important;
 }
+
+/* Estilo global para botones de MUI */
+.MuiButton-root {
+  background-color: var(--color-primary) !important;
+  color: var(--text-primary) !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  transition: background-color 0.25s ease-in-out;
+}
+
+.MuiButton-root:hover {
+  background-color: var(--color-primary-hover) !important;
+}
+
+
+
 
 /* Modo claro opcional
 @media (prefers-color-scheme: light) {

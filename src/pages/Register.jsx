@@ -1,5 +1,4 @@
 import { useState } from "react";
-import React from "react";
 import {
   Container,
   Box,
@@ -7,24 +6,41 @@ import {
   Button,
   Typography,
   Paper,
-  IconButton ,
+  IconButton,
   InputAdornment,
 } from "@mui/material";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 
 
-import { login } from "../api/auth"; 
+import { register } from "../api/auth"; // Suponiendo que tienes una función register
 
-export default function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+export default function Register() {
+  const [avatar, setAvatar] = useState(null);
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: ""
+  });
+
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const [showPassword, setShowPassword] = React.useState(false);
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    setAvatar(e.target.files[0]);
+  };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -38,42 +54,62 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const data = new FormData();
+    data.append("username", formData.username);
+    data.append("email", formData.email);
+    data.append("password", formData.password);
+    if (avatar) data.append("avatar", avatar);
 
     try {
-      
-      const response = await login({ username, password });
-      const token = response.data.token;
-      localStorage.setItem("token", token);
-
-      // Redireccionar a dashboard o lo que toque
-      window.location.href = "/dashboard";
+        const res = await register(data); 
+        setSuccess("¡Registro completado! Revisa tu correo para activar tu cuenta.");
+        setError("");
     } catch (err) {
-      setError("Credenciales inválidas");
+        setError("Error al registrar usuario.");
+        setSuccess("");
     }
   };
 
   return (
     <Container maxWidth="sm">
-      <Paper elevation={2} sx={{ padding: 4, mt: 8}}>
+      <Paper elevation={3} sx={{ padding: 4, mt: 8 }}>
         <Typography variant="h5" textAlign="center" gutterBottom>
-          Inicio de Sesión
+          Crear Cuenta
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate>
+            <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ marginTop: "16px" }}
+                required 
+            />
+
           <TextField
             margin="normal"
             fullWidth
             required
-            label="Correo electrónico"
+            name="username"
+            label="Nombre de usuario"
+            value={formData.username}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="normal"
+            fullWidth
+            required
+            name="email"
             type="email"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            label="Correo electrónico"
+            value={formData.email}
+            onChange={handleChange}
           />
           <FormControl fullWidth margin="normal" variant="outlined" required>
-            <InputLabel htmlFor="password">Contraseña</InputLabel>
+            <InputLabel htmlFor="formData.password">Contraseña</InputLabel>
             <OutlinedInput
-              id="password"
+              id="formData.password"
               type={showPassword ? "text" : "password"}
-              value={password}
+              value={formData.password}
               onChange={(e) => setPassword(e.target.value)}
               endAdornment={
                 <InputAdornment position="end">
@@ -91,18 +127,15 @@ export default function Login() {
               label="Contraseña"
             />
           </FormControl>
-          {error && (
-            <Typography color="error" variant="body2">
-              {error}
-            </Typography>
-          )}
+          {error && <Typography color="error">{error}</Typography>}
+          {success && <Typography color="success.main">{success}</Typography>}
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3 }}
           >
-            Iniciar Sesión
+            Registrarse
           </Button>
         </Box>
       </Paper>
