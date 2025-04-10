@@ -41,14 +41,12 @@ export default function Login() {
 
     try {
       
-      const response = await login({ username, password });
-      const token = response.data.token;
-      localStorage.setItem("token", token);
+      login({ username, password });
 
       // Redireccionar a dashboard o lo que toque
-      window.location.href = "/dashboard";
+      window.location.href = "/";
     } catch (err) {
-      setError("Credenciales inválidas");
+      setError("Correo o contraseña incorrectos, por favor intenta de nuevo.");
     }
   };
 

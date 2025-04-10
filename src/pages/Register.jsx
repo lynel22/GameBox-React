@@ -15,6 +15,8 @@ import Avatar from '@mui/material/Avatar';
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
+import { MAX_IMAGE_FILE_SIZE } from "../constants";
+
 
 
 import { register } from "../api/auth"; // Suponiendo que tienes una función register
@@ -60,21 +62,34 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Validación del tamaño del avatar
+    if (avatar && avatar.size > MAX_IMAGE_FILE_SIZE) {
+      setError("El tamaño máximo permitido para la imagen es de 2MB.");
+      setSuccess("");
+      return;
+    }
+  
     const data = new FormData();
     data.append("username", formData.username);
     data.append("email", formData.email);
     data.append("password", formData.password);
     if (avatar) data.append("avatar", avatar);
-
+  
+    for (let pair of data.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
+  
     try {
-        const res = await register(data); 
-        setSuccess("¡Registro completado! Revisa tu correo para activar tu cuenta.");
-        setError("");
+      const res = await register(data);
+      setSuccess("¡Registro completado! Revisa tu correo para activar tu cuenta.");
+      setError("");
     } catch (err) {
-        setError("Error al registrar usuario.");
-        setSuccess("");
+      setError("Error al registrar usuario.");
+      setSuccess("");
     }
   };
+  
 
   return (
     <Container maxWidth="sm">
@@ -87,7 +102,7 @@ export default function Register() {
                     src={avatarPreview || "https://via.placeholder.com/150"}
                     sx={{ width: 100, height: 100 }}
                 />
-                <input paddingBottom={2}
+                <input paddingbottom={2}
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange}
@@ -118,9 +133,10 @@ export default function Register() {
             <InputLabel htmlFor="formData.password">Contraseña</InputLabel>
             <OutlinedInput
               id="formData.password"
+              name="password"
               type={showPassword ? "text" : "password"}
               value={formData.password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
