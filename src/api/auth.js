@@ -7,17 +7,17 @@ const API = axios.create({
   baseURL: "http://localhost:8080", 
 });
 
-export const login = (credentials) => {
-  const response= API.post("/user/login", credentials);
+export const login = async (credentials) => {
+  const response = await API.post("/user/login", credentials);
   if (response.status === 200) {
     const token = response.data.token;
     saveToken(token);
-  }
-  else {
+  } else {
     throw new Error("Login failed");
   }
   return response;
 };
+
 
 export const register = (userData) => {
   return API.post("/user/register", userData);

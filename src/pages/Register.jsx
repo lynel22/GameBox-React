@@ -62,24 +62,24 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Validación del tamaño del avatar
     if (avatar && avatar.size > MAX_IMAGE_FILE_SIZE) {
       setError("El tamaño máximo permitido para la imagen es de 2MB.");
       setSuccess("");
       return;
     }
-  
+
     const data = new FormData();
     data.append("username", formData.username);
     data.append("email", formData.email);
     data.append("password", formData.password);
     if (avatar) data.append("avatar", avatar);
-  
+
     for (let pair of data.entries()) {
       console.log(`${pair[0]}:`, pair[1]);
     }
-  
+
     try {
       const res = await register(data);
       setSuccess("¡Registro completado! Revisa tu correo para activar tu cuenta.");
@@ -89,7 +89,7 @@ export default function Register() {
       setSuccess("");
     }
   };
-  
+
 
   return (
     <Container maxWidth="sm">

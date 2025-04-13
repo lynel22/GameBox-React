@@ -41,7 +41,7 @@ export default function Login() {
 
     try {
       
-      login({ username, password });
+      await login({ username, password });
 
       // Redireccionar a dashboard o lo que toque
       window.location.href = "/";
