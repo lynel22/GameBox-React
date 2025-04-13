@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as yup from "yup";
 import {
   Container,
   Box,
@@ -18,8 +19,7 @@ import InputLabel from '@mui/material/InputLabel';
 import { MAX_IMAGE_FILE_SIZE } from "../constants";
 
 
-
-import { register } from "../api/auth"; // Suponiendo que tienes una función register
+import { register } from "../api/auth";
 
 export default function Register() {
   const [avatar, setAvatar] = useState(null);
@@ -70,6 +70,13 @@ export default function Register() {
       return;
     }
 
+    // Validación del formulario
+    const isValid = await validateForm();
+    if (!isValid) {
+      setSuccess("");
+      return;
+    }
+
     const data = new FormData();
     data.append("username", formData.username);
     data.append("email", formData.email);
@@ -85,10 +92,43 @@ export default function Register() {
       setSuccess("¡Registro completado! Revisa tu correo para activar tu cuenta.");
       setError("");
     } catch (err) {
-      setError("Error al registrar usuario.");
+      const errorMessage = await err.response?.data || "Error desconocido al registrar usuario, inténtelo más tarde.";
+      setError(errorMessage);
       setSuccess("");
     }
   };
+
+  const validateForm = async () => {
+    try {
+      await registerSchema.validate(formData, { abortEarly: false });
+      return true;
+    } catch (err) {
+      if (err.inner && err.inner.length > 0) {
+        setError(err.inner[0].message);
+      } else {
+        setError("Datos inválidos");
+      }
+      return false;
+    }
+  };
+
+  const registerSchema = yup.object().shape({
+    username: yup
+      .string()
+      .required("El nombre de usuario es obligatorio"),
+  
+    email: yup
+      .string()
+      .email("El correo electrónico no es válido")
+      .required("El correo electrónico es obligatorio"),
+  
+    password: yup
+      .string()
+      .required("La contraseña es obligatoria")
+      .min(8, "La contraseña debe tener al menos 8 caracteres, con un mínimo de 1 letra y 1 número")
+      .matches(/[A-Za-z]/, "La contraseña debe tener al menos 8 caracteres, con un mínimo de 1 letra y 1 número")
+      .matches(/[0-9]/, "La contraseña debe tener al menos 8 caracteres, con un mínimo de 1 letra y 1 número")
+  });
 
 
   return (

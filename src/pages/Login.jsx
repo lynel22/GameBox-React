@@ -45,8 +45,17 @@ export default function Login() {
 
       // Redireccionar a dashboard o lo que toque
       window.location.href = "/";
-    } catch (err) {
-      setError("Correo o contraseña incorrectos, por favor intenta de nuevo.");
+    }catch (err) {
+      const status = err?.response?.status;
+      const message = err?.response?.data;
+  
+      if (status === 403) {
+        setError("Tu cuenta no está activada. Por favor revisa tu correo.");
+      } else if (status === 401) {
+        setError("Correo o contraseña incorrectos.");
+      } else {
+        setError("Ha ocurrido un error inesperado. Intenta de nuevo más tarde.");
+      }
     }
   };
 
