@@ -17,6 +17,7 @@ import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import { MAX_IMAGE_FILE_SIZE } from "../constants";
+import placeholderImg from "../assets/imgs/profile_placeholder.jpg";
 
 
 import { register } from "../api/auth";
@@ -139,15 +140,21 @@ export default function Register() {
             <Box display="flex" alignItems="end" gap={2} marginTop={2} marginBottom={2}>
                 <Avatar
                     alt="Avatar de usuario"
-                    src={avatarPreview || "https://via.placeholder.com/150"}
+                    src={avatarPreview || placeholderImg}
                     sx={{ width: 100, height: 100 }}
                 />
-                <input paddingbottom={2}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    required
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="avatar-upload"
+                  style={{ display: "none" }}
+                  onChange={handleImageChange}
                 />
+                <label htmlFor="avatar-upload">
+                  <Button variant="contained" component="span" color="primary">
+                    Subir Foto de Perfil
+                  </Button>
+                </label>
             </Box>
 
           <TextField
