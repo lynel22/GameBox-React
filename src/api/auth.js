@@ -1,11 +1,6 @@
-import axios from "axios";
+import API from "./config";
 
-const TOKEN_KEY = 'token';
-
-
-const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL
-});
+export const TOKEN_KEY = "token";
 
 export const login = async (credentials) => {
   const response = await API.post("/user/login", credentials);

@@ -5,6 +5,8 @@ import Home from "./pages/Home";
 import AccountActivation from "./pages/AccountActivation";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import EditProfile from "./pages/EditProfile";
+import RequireAuth from "./components/RequireAuth";
 
 
 export default function AppRoutes() {
@@ -17,6 +19,12 @@ export default function AppRoutes() {
         <Route path="/account-activation" element={<AccountActivation />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+       
+        {/* Rutas para la que es necesario loguearse */}
+        <Route element={<RequireAuth />}>
+          <Route path="/edit-profile" element={<EditProfile />} />
+        </Route>
+        
         {/* Añade más rutas según tu app */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
