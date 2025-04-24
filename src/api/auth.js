@@ -18,6 +18,11 @@ export const register = (userData) => {
   return API.post("/user/register", userData);
 }
 
+export const logout = () => {
+  removeToken();
+  window.location.href = "/";
+};
+
 export function saveToken(token) {
   localStorage.setItem(TOKEN_KEY, token);
 }

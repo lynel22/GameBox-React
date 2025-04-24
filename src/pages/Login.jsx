@@ -8,13 +8,14 @@ import {
   Typography,
   Paper,
   IconButton ,
-  InputAdornment,
+  InputAdornment
 } from "@mui/material";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
+import { Link } from "react-router-dom";
 
 
 import { login } from "../api/auth"; 
@@ -103,6 +104,12 @@ export default function Login() {
               {error}
             </Typography>
           )}
+          <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+            ¿Aún no tienes una cuenta? Regístrate{" "}
+            <Link to="/register" style={{textDecoration: "none", cursor: "pointer" }}>
+              aquí
+            </Link>
+          </Typography>
           <Button
             type="submit"
             fullWidth

@@ -1,3 +1,9 @@
+import UserMenu from "../components/UserMenu";
+
 export default function Home() {
-    return <h1>Bienvenido al Home</h1>;
+  return (
+    <div style={{ position: "absolute", top: 10, right: 20 }}>
+      <UserMenu />
+    </div>
+  );
 }
