@@ -198,7 +198,8 @@ export default function EditProfile() {
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
                     onMouseUp={handleMouseUpPassword}
-                    edge="end"
+                    edge="end"                
+                    sx={{ color: "white" }}
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
