@@ -70,8 +70,8 @@ export default function UserMenu() {
         }}
       >
         <Avatar
-          src={user.image_url}
-        //   alt={user.username}
+          src={import.meta.env.VITE_API_URL + user.imageUrl}
+          alt={user.username}
           sx={{ width: 32, height: 32 }}
         />
         <Typography sx={{ color: "skyblue", ml: 1 }}>
