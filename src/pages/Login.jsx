@@ -1,5 +1,6 @@
 import { useState } from "react";
 import React from "react";
+import { useSnackbar } from 'notistack';
 import {
   Container,
   Box,
@@ -27,6 +28,8 @@ export default function Login() {
 
   const [showPassword, setShowPassword] = React.useState(false);
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
@@ -51,11 +54,11 @@ export default function Login() {
       const message = err?.response?.data;
   
       if (status === 403) {
-        setError("Tu cuenta no está activada. Por favor revisa tu correo.");
+        enqueueSnackbar("Tu cuenta no está activada. Por favor revisa tu correo.", { variant: "error" });
       } else if (status === 401) {
-        setError("Correo o contraseña incorrectos.");
+        enqueueSnackbar("Correo o contraseña incorrectos.", { variant: "error" });
       } else {
-        setError("Ha ocurrido un error inesperado. Intenta de nuevo más tarde.");
+        enqueueSnackbar("Ha ocurrido un error inesperado. Intenta de nuevo más tarde.", { variant: "error" });
       }
     }
   };

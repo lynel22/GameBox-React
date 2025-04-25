@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import * as yup from "yup";
+import { useSnackbar } from 'notistack';
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Box,
@@ -20,7 +22,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { MAX_IMAGE_FILE_SIZE } from "../constants";
 import placeholderImg from "../assets/imgs/profile_placeholder.jpg";
 
-import { updateProfile, getCurrentUser } from "../api/user"; // <-- Asume que tienes estas funciones
+import { updateProfile, getCurrentUser } from "../api/user";
 
 export default function EditProfile() {
   const [avatar, setAvatar] = useState(null);
@@ -34,6 +36,9 @@ export default function EditProfile() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Carga datos del usuario actual
@@ -82,7 +87,7 @@ export default function EditProfile() {
     e.preventDefault();
 
     if (avatar && avatar.size > MAX_IMAGE_FILE_SIZE) {
-      setError("La imagen supera el tamaño máximo de 2MB.");
+      enqueueSnackbar("La imagen supera el tamaño máximo de 2MB.", { variant: "error" });
       return;
     }
 
@@ -97,11 +102,10 @@ export default function EditProfile() {
 
     try {
       await updateProfile(data);
-      setSuccess("Perfil actualizado correctamente.");
-      setError("");
+      enqueueSnackbar("Perfil actualizado correctamente.", { variant: "success" });
+      navigate("/profile");
     } catch (err) {
-      setError("Error al actualizar el perfil.");
-      setSuccess("");
+      enqueueSnackbar("Error al actualizar el perfil.", { variant: "error" });
     }
   };
 
@@ -110,7 +114,7 @@ export default function EditProfile() {
       await profileSchema.validate(formData, { abortEarly: false });
       return true;
     } catch (err) {
-      setError(err.inner?.[0]?.message || "Datos inválidos");
+      enqueueSnackbar(err.inner?.[0]?.message || "Datos inválidos", { variant: "error" });
       return false;
     }
   };
