@@ -35,7 +35,7 @@ export default function UserMenu() {
     handleClose();
   };
 
-  if (loading) return <CircularProgress size={24} />;
+  if (loading) return <CircularProgress size={32} />;
 
   if (!user) {
     return (
@@ -47,7 +47,10 @@ export default function UserMenu() {
           sx={{
             textTransform: "none",
             borderRadius: 2,
-            fontWeight: 500
+            fontWeight: 600,
+            fontSize: "1.3rem",
+            px: 3,
+            py: 1
           }}
         >
           Iniciar sesión
@@ -57,13 +60,13 @@ export default function UserMenu() {
   }
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 2 , backgroundColor: "#2a2a2a", borderRadius: 2, }}>
       <IconButton
         onClick={handleOpen}
         sx={{
-          p: 0,
-          borderRadius: "10%",
-          border: "0px solid #ccc",
+          p: 1,
+          borderRadius: 2,
+          border: "2px solid transparent",
           "&:focus": {
             outline: "none"
           }
@@ -72,12 +75,12 @@ export default function UserMenu() {
         <Avatar
           src={import.meta.env.VITE_API_URL + user.imageUrl}
           alt={user.username}
-          sx={{ width: 32, height: 32 }}
+          sx={{ width: 48, height: 48 }}
         />
-        <Typography sx={{ color: "skyblue", ml: 1 }}>
+        <Typography sx={{ color: "#fff", ml: 2, fontSize: "1.2rem", fontWeight: 500 }}>
           {user.username}
         </Typography>
-        <ArrowDropDownIcon sx={{ color: "skyblue" }} />
+        <ArrowDropDownIcon sx={{ color: "#fff", fontSize: "2rem", ml: 1 }} />
       </IconButton>
       <Menu
         anchorEl={anchorEl}
@@ -85,7 +88,14 @@ export default function UserMenu() {
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
-        sx={{ marginTop: 1.5 }}
+        sx={{
+          marginTop: 1,
+          "& .MuiMenuItem-root": {
+            fontSize: "1.1rem",
+            py: 1.5,
+            px: 4.5
+          }
+        }}
       >
         <MenuItem onClick={handleProfile}>Perfil</MenuItem>
         <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
