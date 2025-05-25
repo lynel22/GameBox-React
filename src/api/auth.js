@@ -61,3 +61,14 @@ export const verifySteamLogin = async (urlParams) => {
   }
 };
 
+export const unlinkSteamAccount = async () => {
+  try {
+    const response = await API.put("/user/auth/steam/unlink");
+    return { ok: true, message: response.data };
+  } catch (error) {
+    const message =
+      error.response?.data || error.message || "Error desconocido al desvincular Steam";
+    return { ok: false, message };
+  }
+}
+
