@@ -35,3 +35,29 @@ export function getToken() {
 export function removeToken() {
   localStorage.removeItem(TOKEN_KEY);
 }
+
+export const verifySteamLogin = async (urlParams) => {
+  const formData = {};
+  for (const [key, value] of urlParams.entries()) {
+    formData[key] = value;
+  }
+
+  try {
+    const response = await API.post(
+      "/user/auth/steam/verify",
+      formData, // ahora como objeto JSON
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return { ok: true, message: response.data };
+  } catch (error) {
+    const message =
+      error.response?.data || error.message || "Error desconocido al verificar Steam";
+    return { ok: false, message };
+  }
+};
+

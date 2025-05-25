@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Avatar,
@@ -8,14 +8,17 @@ import {
   Stack,
   IconButton,
   CircularProgress,
+  Button,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext"; // Asegúrate de que la ruta es correcta
+import { useAuth } from "../context/AuthContext"; // Ajusta la ruta si es necesario
+import SteamLoginButton from "../components/SteamLoginButton"; // Ajusta la ruta si es necesario
 
 export default function UserProfile() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+  const [steamId, setSteamId] = useState(null);
 
   if (loading) {
     return (
@@ -112,6 +115,16 @@ export default function UserProfile() {
                 {user.title || "Gamer sin título"}
               </Typography>
             </Stack>
+            <Box mt={3}>
+              {steamId ? (
+                <Typography variant="body2" color="#00ff99">
+                  Cuenta de Steam vinculada: {steamId}
+                </Typography>
+              ) : (  
+                <SteamLoginButton />
+                
+              )}
+            </Box>
           </Box>
         </Stack>
       </Paper>
