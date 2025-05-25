@@ -12,13 +12,21 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext"; // Ajusta la ruta si es necesario
-import SteamLoginButton from "../components/SteamLoginButton"; // Ajusta la ruta si es necesario
+import { useAuth } from "../context/AuthContext"; 
+import SteamLoginButton from "../components/SteamLoginButton";
 
 export default function UserProfile() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
-  const [steamId, setSteamId] = useState(null);
+  const [steamId, setSteamId] = useState(user?.steamId || null);
+
+  useEffect(() => {
+    if (user?.steamId) {
+      console.log("🟩 Steam ID del usuario:", user.steamId);
+    } else {
+      console.log("🟥 El usuario no tiene Steam ID");
+    }
+  }, [user]);
 
   if (loading) {
     return (
@@ -117,7 +125,7 @@ export default function UserProfile() {
             </Stack>
             <Box mt={3}>
               {steamId ? (
-                <Typography variant="body2" color="#00ff99">
+                <Typography variant="body2" color="#fff">
                   Cuenta de Steam vinculada: {steamId}
                 </Typography>
               ) : (  

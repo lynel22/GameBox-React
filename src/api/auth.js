@@ -45,7 +45,7 @@ export const verifySteamLogin = async (urlParams) => {
   try {
     const response = await API.post(
       "/user/auth/steam/verify",
-      formData, // ahora como objeto JSON
+      formData,
       {
         headers: {
           "Content-Type": "application/json",
