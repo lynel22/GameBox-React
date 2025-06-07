@@ -208,7 +208,7 @@ export default function UserProfile() {
           </Button>
           <Button
             onClick={handleUnlinkSteam}
-            
+            variant="contained"
             sx={{
               backgroundColor: "#ff4d4f",
               color: "#fff",
