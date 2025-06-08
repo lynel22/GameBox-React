@@ -27,7 +27,10 @@ import {
   Search as SearchIcon,
 } from "@mui/icons-material";
 import UserMenu from "../components/UserMenu";
-import { getGeneralLibrary, getSteamLibrary, getEpicLibrary } from "../api/game"; // Asegúrate de la ruta correcta
+import { getGeneralLibrary, getSteamLibrary, getEpicLibrary } from "../api/game"; 
+import steamIcon from '../assets/icons/steam.png';
+import epicIcon from '../assets/icons/epic.png';
+import gameboxIcon from '../assets/icons/gamebox.png';
 
 const drawerWidth = 240;
 
@@ -85,18 +88,25 @@ export default function Home() {
           <Typography variant="overline" sx={{ color: "#888" }}>BIBLIOTECAS</Typography>
           <List>
             <ListItemButton selected={selectedLibrary === "general"} onClick={() => loadLibrary("general")}>
-              <ListItemIcon><FolderIcon sx={{ color: "#1D5ECF" }} /></ListItemIcon>
+              <ListItemIcon><StorageIcon sx={{ color: "#1D5ECF" }} /></ListItemIcon>
               <ListItemText primary="General" />
             </ListItemButton>
+
             <ListItemButton selected={selectedLibrary === "steam"} onClick={() => loadLibrary("steam")}>
-              <ListItemIcon><StorageIcon sx={{ color: "#1D5ECF" }} /></ListItemIcon>
+              <ListItemIcon>
+                <img src={steamIcon} alt="Steam" style={{ width: 24, height: 24 }} />
+              </ListItemIcon>
               <ListItemText primary="Steam" />
             </ListItemButton>
+
             <ListItemButton selected={selectedLibrary === "epic"} onClick={() => loadLibrary("epic")}>
-              <ListItemIcon><GamepadIcon sx={{ color: "#90caf9" }} /></ListItemIcon>
+              <ListItemIcon>
+                <img src={epicIcon} alt="Epic Games" style={{ width: 24, height: 24 }} />
+              </ListItemIcon>
               <ListItemText primary="Epic Games" />
             </ListItemButton>
           </List>
+
 
           <Typography variant="overline" sx={{ mt: 4, color: "#888" }}>COLECCIONES</Typography>
           <List>
@@ -118,7 +128,7 @@ export default function Home() {
         sx={{
           flexGrow: 1,
           pt: "80px",
-          pl: open ? `${drawerWidth}px` : 0,
+          ml: open ? `${drawerWidth}px` : 0,
           pr: 4,
           transition: "padding-left 0.3s",
           bgcolor: "#121212",
@@ -135,17 +145,18 @@ export default function Home() {
             top: 0,
             left: open ? `${drawerWidth}px` : 0,
             right: 0,
-            height: 80,
+            height: 100,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            px: 3,
+            px: 4,
             bgcolor: "#121212",
             borderBottom: "1px solid #222",
             zIndex: 1300,
             transition: "left 0.3s",
           }}
         >
+
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton
               onClick={toggleDrawer}
@@ -154,13 +165,24 @@ export default function Home() {
                 mr: 2,
                 "&:hover": { backgroundColor: "transparent" },
                 "&:focus": { outline: "none" },
+                fontSize: "2rem", // aumenta el tamaño
               }}
             >
-              <MenuIcon />
+              <MenuIcon sx={{ fontSize: 36 }} />
             </IconButton>
-            <VideogameAsset sx={{ color: "#1D5ECF", mr: 1 }} />
-            <Typography variant="h6" noWrap>Gamebox</Typography>
+
+            <Box
+              component="img"
+              src={gameboxIcon}
+              alt="Gamebox Icon"
+              sx={{ width: 65, height: 65, mr: 2 }}
+            />
+
+            <Typography variant="h5" noWrap sx={{ color: "#fff", fontWeight: 600 }}>
+              Gamebox
+            </Typography>
           </Box>
+
 
           <Box
             sx={{
@@ -171,7 +193,7 @@ export default function Home() {
               "&:hover": { backgroundColor: alpha("#ffffff", 0.1) },
               mr: 2,
               width: "40%",
-              height: "40px",
+              height: "50px",
               px: 2,
             }}
           >
@@ -218,7 +240,7 @@ export default function Home() {
                 <CardMedia
                   component="img"
                   height="140"
-                  image={game.imageUrl || "/default-image.jpg"} // Asegúrate de tener una imagen por defecto
+                  image={game.imageUrl || "/default-image.jpg"}
                   alt={game.name}
                   sx={{ objectFit: "cover" }}
                 />
