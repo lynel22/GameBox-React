@@ -31,6 +31,8 @@ import { getGeneralLibrary, getSteamLibrary, getEpicLibrary } from "../api/game"
 import steamIcon from '../assets/icons/steam.png';
 import epicIcon from '../assets/icons/epic.png';
 import gameboxIcon from '../assets/icons/gamebox.png';
+import { useNavigate } from "react-router-dom";
+
 
 const drawerWidth = 240;
 
@@ -40,6 +42,7 @@ export default function Home() {
   const [games, setGames] = useState([]);
 
   const toggleDrawer = () => setOpen(!open);
+  const navigate = useNavigate();
 
   const loadLibrary = async (type) => {
     setSelectedLibrary(type);
@@ -65,7 +68,7 @@ export default function Home() {
   }, []);
 
   return (
-    <Box sx={{ display: "flex", height: "100vh", bgcolor: "#121212", color: "#fff" }}>
+    <Box sx={{ display: "flex", height: "100vh", bgcolor: "#121212", color: "#fff" , width: "100vw" }}>
       <CssBaseline />
 
       {/* Sidebar */}
@@ -74,6 +77,7 @@ export default function Home() {
         open={open}
         sx={{
           width: drawerWidth,
+          display: open ? "block" : "none",
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
@@ -127,23 +131,24 @@ export default function Home() {
         component="main"
         sx={{
           flexGrow: 1,
-          pt: "80px",
-          ml: open ? `${drawerWidth}px` : 0,
-          pr: 4,
-          transition: "padding-left 0.3s",
           bgcolor: "#121212",
           minHeight: "100vh",
-          width: "100%",
-          
+          pt: "100px",
+          pl: 4,
+          pr: 4,
+          transition: "margin-left 0.3s",
+          marginLeft: 0,
         }}
       >
+
 
         {/* Header flotante */}
         <Box
           sx={{
             position: "fixed",
             top: 0,
-            left: open ? `${drawerWidth}px` : 0,
+            left: 0,
+            ml: open ? `${drawerWidth}px` : 0,
             right: 0,
             height: 100,
             display: "flex",
@@ -153,9 +158,10 @@ export default function Home() {
             bgcolor: "#121212",
             borderBottom: "1px solid #222",
             zIndex: 1300,
-            transition: "left 0.3s",
+            transition: "margin-left 0.3s",
           }}
         >
+
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton
@@ -227,6 +233,7 @@ export default function Home() {
             {games.map((game) => (
               <Card
                 key={game.id}
+                onClick={() => navigate(`/game/${game.id}`)}
                 sx={{
                   bgcolor: "#1e1e1e",
                   color: "#fff",
@@ -235,6 +242,11 @@ export default function Home() {
                   boxShadow: 3,
                   display: "flex",
                   flexDirection: "column",
+                  cursor: "pointer", // para que se vea como clicable
+                  transition: "transform 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.03)",
+                  },
                 }}
               >
                 <CardMedia

@@ -11,3 +11,7 @@ export const getSteamLibrary = () => {
 export const getEpicLibrary = () => {
   return API.get("/game/library/epic");
 };
+
+export const getGameDetail = (gameId) => {
+  return API.get(`/game/detail?gameId=${gameId}`)
+};

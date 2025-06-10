@@ -9,6 +9,7 @@ import EditProfile from "./pages/EditProfile";
 import RequireAuth from "./components/RequireAuth";
 import UserProfile from "./pages/UserProfile";
 import SteamCallback from "./pages/SteamCallback";
+import GameDetail from "./pages/GameDetail";
 
 
 export default function AppRoutes() {
@@ -27,6 +28,7 @@ export default function AppRoutes() {
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/auth/steam/callback" element={<SteamCallback />} />
+          <Route path="/game/:gameId" element={<GameDetail/>} />
         </Route>
         
         {/* Añade más rutas según tu app */}
