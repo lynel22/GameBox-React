@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getGameDetail } from "../api/game";
+import { LinearProgress } from "@mui/material";
 import {
   Box,
   Typography,
@@ -46,14 +47,13 @@ export default function GameDetail() {
     <Box sx={{ bgcolor: "#121212", color: "#fff", minHeight: "100vh" }}>
       <Header open={false} toggleDrawer={() => {}} />
 
-      <Box sx={{ pt: "130px", pb: 6 }}>
+      <Box sx={{ pt: "130px", pb: 6, px: { xs: 2, md: 6 } }}>
         {/* Imagen + Info */}
         <Box
           display="flex"
           flexDirection={{ xs: "column", md: "row" }}
           gap={4}
           alignItems="flex-start"
-          px={{ xs: 2, md: 6 }} // un poco de padding horizontal solo para móviles
         >
           {/* Imagen + Nombre */}
           <Box>
@@ -68,32 +68,52 @@ export default function GameDetail() {
                 src={game.imageUrl}
                 alt={game.name}
                 sx={{
+                  height: 450,
                   objectFit: "contain",
                 }}
               />
             </Box>
-            <Typography variant="h4" mt={2}>
+            <Typography variant="h4" mt={2} sx={{ textAlign: "left" }}>
               {game.name}
             </Typography>
           </Box>
 
           {/* Descripción + Metadatos */}
           <Box flex={1}>
-            <Typography paragraph>{game.description}</Typography>
+            <Typography
+              paragraph
+              sx={{
+                maxHeight: "350px",
+                overflow: "hidden",
+                textAlign: "justify",
+              }}
+            >
+              {game.description}
+            </Typography>
 
-            <Typography>
+            <Typography sx={{ textAlign: "left" }}>
               <strong>Fecha de lanzamiento:</strong> {game.releaseDate}
             </Typography>
-            <Typography>
+            <Typography sx={{ textAlign: "left" }}>
               <strong>Desarrollador:</strong> {game.developer?.name}
             </Typography>
 
-            <Typography mt={2}>
-              <strong>Géneros:</strong>
-            </Typography>
-            <Box display="flex" flexWrap="wrap" gap={1} mt={1}>
+            <Box
+              display="flex"
+              flexWrap="wrap"
+              gap={1}
+              mt={1}
+              sx={{ alignItems: "center", textAlign: "center" }}
+            >
+              <Typography mt={2}>
+                <strong>Géneros:</strong>
+              </Typography>
               {game.genres.map((genre) => (
                 <Chip
+                  sx={{
+                    bgcolor: "#1D5ECF",
+                    color: "#fff",
+                  }}
                   key={genre.id}
                   label={genre.spanishName || genre.name}
                 />
@@ -102,8 +122,8 @@ export default function GameDetail() {
           </Box>
         </Box>
 
-        {/* Stats y logros */}
-        <Box mt={6} px={{ xs: 2, md: 6 }}>
+        {/* Stats generales */}
+        <Box mt={3}>
           <Box display="flex" alignItems="center" gap={3} mt={1}>
             <Box display="flex" alignItems="center">
               <AccessTimeIcon sx={{ mr: 1 }} />
@@ -121,37 +141,68 @@ export default function GameDetail() {
               </Typography>
             </Box>
           </Box>
-
-          <Typography mt={2}>
-            Logros Conseguidos {unlocked}/{total} ({percentage}%)
-          </Typography>
-          <Box display="flex" mt={1} flexWrap="wrap">
-            {game.achievements.map((ach, i) => (
-              <Tooltip key={i} title={ach.name}>
-                <Box
-                  component="img"
-                  src={ach.imageUrl}
-                  alt={ach.name}
-                  width={40}
-                  height={40}
-                  sx={{ opacity: ach.unlocked ? 1 : 0.3, mr: 1, mb: 1 }}
-                />
-              </Tooltip>
-            ))}
-          </Box>
         </Box>
 
-        {/* Amigos */}
-        <Box mt={4} px={{ xs: 2, md: 6 }}>
-          <Typography variant="h6">
-            {game.friendsThatOwnIt.length} amigo(s) tienen este juego
-          </Typography>
-          <Box display="flex" gap={2} mt={1}>
-            {game.friendsThatOwnIt.map((friend, i) => (
-              <Tooltip key={i} title={friend.username}>
-                <Avatar src={friend.imageUrl} />
-              </Tooltip>
-            ))}
+        {/* Logros y amigos (flex layout) */}
+        <Box
+          mt={4}
+          display="flex"
+          flexDirection={{ xs: "column", md: "row" }}
+          gap={4}
+        >
+          {/* Logros (60%) */}
+          <Box flex={{ xs: "1 1 100%", md: "0 0 64%" }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+              <Typography variant="h6">Logros Conseguidos</Typography>
+              <Typography variant="body1">
+                {unlocked}/{total} ({percentage}%)
+              </Typography>
+            </Box>
+
+            <LinearProgress
+              variant="determinate"
+              value={percentage}
+              sx={{
+                height: 10,
+                borderRadius: 5,
+                mt: 1,
+                backgroundColor: "#333",
+                "& .MuiLinearProgress-bar": {
+                  backgroundColor: "#1D5ECF",
+                },
+              }}
+            />
+
+            <Box display="flex" mt={2} flexWrap="wrap">
+              {game.achievements.map((ach, i) => (
+                <Tooltip key={i} title={ach.name}>
+                  <Box
+                    component="img"
+                    src={ach.imageUrl}
+                    alt={ach.name}
+                    width={40}
+                    height={40}
+                    sx={{ opacity: ach.unlocked ? 1 : 0.3, mr: 1, mb: 1 }}
+                  />
+                </Tooltip>
+              ))}
+            </Box>
+          </Box>
+
+
+
+          {/* Amigos*/}
+          <Box flex={{ xs: "1 1 100%", md: "0 0 36%" }}>
+            <Typography variant="h6">
+              {game.friendsThatOwnIt.length} amigo(s) tienen este juego
+            </Typography>
+            <Box display="flex" gap={2} mt={1} flexWrap="wrap">
+              {game.friendsThatOwnIt.map((friend, i) => (
+                <Tooltip key={i} title={friend.username}>
+                  <Avatar src={friend.imageUrl} />
+                </Tooltip>
+              ))}
+            </Box>
           </Box>
         </Box>
       </Box>
