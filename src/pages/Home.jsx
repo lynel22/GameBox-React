@@ -4,8 +4,6 @@ import {
   CssBaseline,
   Divider,
   Drawer,
-  IconButton,
-  InputBase,
   List,
   ListItemButton,
   ListItemIcon,
@@ -14,25 +12,22 @@ import {
   CardContent,
   CardMedia,
   Typography,
-  alpha,
 } from "@mui/material";
 import {
-  Menu as MenuIcon,
   Folder as FolderIcon,
   Storage as StorageIcon,
   SportsEsports as GamepadIcon,
   StarBorder,
   History,
   VideogameAsset,
-  Search as SearchIcon,
 } from "@mui/icons-material";
 import UserMenu from "../components/UserMenu";
-import { getGeneralLibrary, getSteamLibrary, getEpicLibrary } from "../api/game"; 
-import steamIcon from '../assets/icons/steam.png';
-import epicIcon from '../assets/icons/epic.png';
-import gameboxIcon from '../assets/icons/gamebox.png';
+import { getGeneralLibrary, getSteamLibrary, getEpicLibrary } from "../api/game";
+import steamIcon from "../assets/icons/steam.png";
+import epicIcon from "../assets/icons/epic.png";
 import { useNavigate } from "react-router-dom";
-
+import Header from "../components/Header"; // 👈 Importa el Header
+import gameboxIcon from "../assets/icons/gamebox.png";
 
 const drawerWidth = 240;
 
@@ -55,8 +50,7 @@ export default function Home() {
       } else if (type === "epic") {
         response = await getEpicLibrary();
       }
-      console.log("Games loaded:", response.data);
-      setGames(response.data); // Asume que el array de juegos está en response.data
+      setGames(response.data);
     } catch (error) {
       console.error("Error loading games:", error);
       setGames([]);
@@ -68,7 +62,7 @@ export default function Home() {
   }, []);
 
   return (
-    <Box sx={{ display: "flex", height: "100vh", bgcolor: "#121212", color: "#fff" , width: "100vw" }}>
+    <Box sx={{ display: "flex", height: "100vh", bgcolor: "#121212", color: "#fff", width: "100vw" }}>
       <CssBaseline />
 
       {/* Sidebar */}
@@ -89,10 +83,14 @@ export default function Home() {
         }}
       >
         <Box sx={{ p: 2 }}>
-          <Typography variant="overline" sx={{ color: "#888" }}>BIBLIOTECAS</Typography>
+          <Typography variant="overline" sx={{ color: "#888" }}>
+            BIBLIOTECAS
+          </Typography>
           <List>
             <ListItemButton selected={selectedLibrary === "general"} onClick={() => loadLibrary("general")}>
-              <ListItemIcon><StorageIcon sx={{ color: "#1D5ECF" }} /></ListItemIcon>
+              <ListItemIcon>
+                <StorageIcon sx={{ color: "#1D5ECF" }} />
+              </ListItemIcon>
               <ListItemText primary="General" />
             </ListItemButton>
 
@@ -111,15 +109,20 @@ export default function Home() {
             </ListItemButton>
           </List>
 
-
-          <Typography variant="overline" sx={{ mt: 4, color: "#888" }}>COLECCIONES</Typography>
+          <Typography variant="overline" sx={{ mt: 4, color: "#888" }}>
+            COLECCIONES
+          </Typography>
           <List>
             <ListItemButton>
-              <ListItemIcon><StarBorder sx={{ color: "#1D5ECF" }} /></ListItemIcon>
+              <ListItemIcon>
+                <StarBorder sx={{ color: "#1D5ECF" }} />
+              </ListItemIcon>
               <ListItemText primary="Favoritos" />
             </ListItemButton>
             <ListItemButton>
-              <ListItemIcon><History sx={{ color: "#1D5ECF" }} /></ListItemIcon>
+              <ListItemIcon>
+                <History sx={{ color: "#1D5ECF" }} />
+              </ListItemIcon>
               <ListItemText primary="Recientes" />
             </ListItemButton>
           </List>
@@ -140,78 +143,8 @@ export default function Home() {
           marginLeft: 0,
         }}
       >
-
-
-        {/* Header flotante */}
-        <Box
-          sx={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            ml: open ? `${drawerWidth}px` : 0,
-            right: 0,
-            height: 100,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            px: 4,
-            bgcolor: "#121212",
-            borderBottom: "1px solid #222",
-            zIndex: 1300,
-            transition: "margin-left 0.3s",
-          }}
-        >
-
-
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton
-              onClick={toggleDrawer}
-              sx={{
-                color: "#fff",
-                mr: 2,
-                "&:hover": { backgroundColor: "transparent" },
-                "&:focus": { outline: "none" },
-                fontSize: "2rem", // aumenta el tamaño
-              }}
-            >
-              <MenuIcon sx={{ fontSize: 36 }} />
-            </IconButton>
-
-            <Box
-              component="img"
-              src={gameboxIcon}
-              alt="Gamebox Icon"
-              sx={{ width: 65, height: 65, mr: 2 }}
-            />
-
-            <Typography variant="h5" noWrap sx={{ color: "#fff", fontWeight: 600 }}>
-              Gamebox
-            </Typography>
-          </Box>
-
-
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              borderRadius: 2,
-              backgroundColor: alpha("#ffffff", 0.05),
-              "&:hover": { backgroundColor: alpha("#ffffff", 0.1) },
-              mr: 2,
-              width: "40%",
-              height: "50px",
-              px: 2,
-            }}
-          >
-            <InputBase
-              placeholder="Buscar juegos…"
-              sx={{ color: "inherit", flex: 1, height: "100%" }}
-            />
-            <SearchIcon sx={{ color: "#ccc" }} />
-          </Box>
-
-          <UserMenu />
-        </Box>
+        {/* Header separado */}
+        <Header open={open} toggleDrawer={toggleDrawer} />
 
         {/* Contenido real */}
         <Box sx={{ mt: 8, mb: 10, width: "100%" }}>
@@ -222,7 +155,6 @@ export default function Home() {
             {games.length} juegos disponibles
           </Typography>
 
-          {/* Aquí renderizas los juegos */}
           <Box
             sx={{
               display: "grid",
@@ -242,7 +174,7 @@ export default function Home() {
                   boxShadow: 3,
                   display: "flex",
                   flexDirection: "column",
-                  cursor: "pointer", // para que se vea como clicable
+                  cursor: "pointer",
                   transition: "transform 0.2s",
                   "&:hover": {
                     transform: "scale(1.03)",
@@ -260,7 +192,6 @@ export default function Home() {
                   <Typography variant="subtitle1" fontWeight="bold" noWrap>
                     {game.name}
                   </Typography>
-                  {/* Aquí puedes añadir plataformas, likes, etc. */}
                 </CardContent>
               </Card>
             ))}
