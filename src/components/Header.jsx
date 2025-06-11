@@ -131,15 +131,24 @@ export default function Header({ open, toggleDrawer, selectedLibrary, loadLibrar
           </IconButton>
 
           <Box
-            component="img"
-            src={gameboxIcon}
-            alt="Gamebox Icon"
-            sx={{ width: 65, height: 65, mr: 2 }}
-          />
-
-          <Typography variant="h5" noWrap sx={{ color: "#fff", fontWeight: 600 }}>
-            Gamebox
-          </Typography>
+            onClick={() => navigate("/")}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              cursor: "pointer",
+              "&:hover": { opacity: 0.8 },
+            }}
+          >
+            <Box
+              component="img"
+              src={gameboxIcon}
+              alt="Gamebox Icon"
+              sx={{ width: 65, height: 65, mr: 1 }}
+            />
+            <Typography variant="h5" noWrap sx={{ color: "#fff", fontWeight: 600 }}>
+              Gamebox
+            </Typography>
+          </Box>
         </Box>
 
         <Box

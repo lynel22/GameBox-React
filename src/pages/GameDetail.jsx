@@ -13,11 +13,14 @@ import {
   LinearProgress,
 } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 export default function GameDetail() {
   const { gameId } = useParams();
   const [game, setGame] = useState(null);
+  const [showFullDesc, setShowFullDesc] = useState(false);
 
   useEffect(() => {
     const fetchGameDetail = async () => {
@@ -62,14 +65,27 @@ export default function GameDetail() {
             sx={{ overflow: "hidden" }}
           >
             <Box
-              component="img"
-              src={game.imageUrl}
-              alt={game.name}
               sx={{
+                width: 760, // Ajusta si lo ves muy estrecho o ancho
                 height: 450,
-                objectFit: "contain",
+                borderRadius: 2,
+                overflow: "hidden",
+                boxShadow: 3,
               }}
-            />
+            >
+              <Box
+                component="img"
+                src={game.imageUrl}
+                alt={game.name}
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                }}
+              />
+            </Box>
+
           </Box>
           <Typography variant="h4" mt={2} sx={{ textAlign: "left" }}>
             {game.name}
@@ -78,16 +94,41 @@ export default function GameDetail() {
 
         {/* Descripción + Metadatos */}
         <Box flex={1}>
-          <Typography
-            paragraph
-            sx={{
-              maxHeight: "350px",
-              overflow: "hidden",
-              textAlign: "justify",
-            }}
-          >
-            {game.description}
-          </Typography>
+          <Box sx={{ textAlign: "justify", position: "relative" }}>
+            <Typography paragraph>
+              {game.description.length > 300
+                ? `${game.description.slice(0, 300)}`
+                : game.description}
+            </Typography>
+
+            {game.description.length > 300 && (
+              <IconButton
+                size="small"
+                onClick={() => setShowFullDesc(true)}
+                disableRipple
+                sx={{
+                  position: "absolute",
+                  right: 10,
+                  bottom: -8,
+                  color: "var(--color-primary)",
+                  backgroundColor: "transparent",
+                  "&:hover": {
+                    backgroundColor: "transparent",
+                  },
+                  "&:active": {
+                    backgroundColor: "transparent",
+                  },
+                  "&:focus": {
+                    outline: "none",
+                  },
+                }}
+              >
+                <MoreHorizIcon />
+              </IconButton>
+
+            )}
+          </Box>
+
 
           <Typography sx={{ textAlign: "left" }}>
             <strong>Fecha de lanzamiento:</strong> {game.releaseDate}
@@ -118,17 +159,17 @@ export default function GameDetail() {
       </Box>
 
       {/* Stats generales */}
-      <Box mt={3}>
-        <Box display="flex" alignItems="center" gap={3} mt={1}>
+      <Box mt={2}>
+        <Box display="flex" alignItems="center" gap={6} mt={0}>
           <Box display="flex" alignItems="center">
-            <AccessTimeIcon sx={{ mr: 1 }} />
-            <Typography>
+            <AccessTimeIcon sx={{ mr: 1, fontSize: 28 }} /> {/* Icono más grande */}
+            <Typography variant="h6"> {/* Texto más grande */}
               {game.hoursPlayed?.toFixed(1) || 0} horas jugadas
             </Typography>
           </Box>
           <Box display="flex" alignItems="center">
-            <CalendarTodayIcon sx={{ mr: 1 }} />
-            <Typography>
+            <CalendarTodayIcon sx={{ mr: 1, fontSize: 28 }} />
+            <Typography variant="h6">
               Última sesión:{" "}
               {game.lastPlayed
                 ? new Date(game.lastPlayed).toLocaleDateString()
@@ -138,9 +179,10 @@ export default function GameDetail() {
         </Box>
       </Box>
 
+
       {/* Logros y amigos */}
       <Box
-        mt={4}
+        mt={3}
         display="flex"
         flexDirection={{ xs: "column", md: "row" }}
         gap={4}
@@ -168,15 +210,15 @@ export default function GameDetail() {
             }}
           />
 
-          <Box display="flex" mt={2} flexWrap="wrap">
+          <Box display="flex" mt={2} ml={1} flexWrap="wrap">
             {game.achievements.map((ach, i) => (
-              <Tooltip key={i} title={ach.name}>
+              <Tooltip key={i} title={ach.name} placement="top">
                 <Box
                   component="img"
                   src={ach.imageUrl}
                   alt={ach.name}
-                  width={40}
-                  height={40}
+                  width={45}
+                  height={45}
                   sx={{ opacity: ach.unlocked ? 1 : 0.3, mr: 1, mb: 1 }}
                 />
               </Tooltip>
@@ -198,6 +240,22 @@ export default function GameDetail() {
           </Box>
         </Box>
       </Box>
+      <Dialog
+        open={showFullDesc}
+        onClose={() => setShowFullDesc(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Descripción completa</DialogTitle>
+        <DialogContent>
+          <Typography sx={{ textAlign: "justify" }}>
+            {game.description}
+          </Typography>
+        </DialogContent>
+      </Dialog>
     </Box>
+
+    
+
   );
 }

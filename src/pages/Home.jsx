@@ -39,7 +39,7 @@ export default function Home() {
   }, []);
 
   return (
-    <Box sx={{ mt: 2, pb: 4 }}>
+    <Box sx={{ mt: 2, pb: 4, pr: 4, pl: 2 }}>
       <Typography variant="h4" sx={{ mb: 1, textTransform: "capitalize" }}>
         {selectedLibrary}
       </Typography>
