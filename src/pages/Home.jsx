@@ -147,7 +147,7 @@ export default function Home() {
         <Header open={open} toggleDrawer={toggleDrawer} />
 
         {/* Contenido real */}
-        <Box sx={{ mt: 8, mb: 10, width: "100%" }}>
+        <Box sx={{ mt: 4, pb: 4, width: "100%" }}>
           <Typography variant="h4" sx={{ mb: 1, textTransform: "capitalize" }}>
             {selectedLibrary}
           </Typography>
