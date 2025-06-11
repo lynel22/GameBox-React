@@ -10,13 +10,14 @@ import RequireAuth from "./components/RequireAuth";
 import UserProfile from "./pages/UserProfile";
 import SteamCallback from "./pages/SteamCallback";
 import GameDetail from "./pages/GameDetail";
+import Layout from "./components/Layout";
 
 
 export default function AppRoutes() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Layout> <Home/> </Layout>} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/account-activation" element={<AccountActivation />} />
@@ -28,7 +29,7 @@ export default function AppRoutes() {
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/auth/steam/callback" element={<SteamCallback />} />
-          <Route path="/game/:gameId" element={<GameDetail/>} />
+          <Route path="/game/:gameId" element={<Layout> <GameDetail/> </Layout>} />
         </Route>
         
         {/* Añade más rutas según tu app */}
