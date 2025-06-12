@@ -1,32 +1,20 @@
-// src/layout/Layout.jsx
-import { useState } from "react";
 import { Box, CssBaseline } from "@mui/material";
 import Header from "../components/Header";
+import { Outlet } from "react-router-dom";
+import { useLayout } from "../context/LayoutContext";
 
-const drawerWidth = 240;
-
-export default function Layout({ children }) {
-  const [open, setOpen] = useState(true);
-  const [selectedLibrary, setSelectedLibrary] = useState("general");
-
-  const toggleDrawer = () => setOpen(!open);
-
-  
-  const handleLibrarySelect = (library) => {
-    setSelectedLibrary(library);
-  };
+export default function Layout() {
+  const { drawerOpen, toggleDrawer, selectedLibrary, setSelectedLibrary } = useLayout();
 
   return (
     <Box sx={{ display: "flex", bgcolor: "#121212", color: "#fff", width: "100vw" }}>
       <CssBaseline />
-
       <Header
-        open={open}
+        open={drawerOpen}
         toggleDrawer={toggleDrawer}
         selectedLibrary={selectedLibrary}
-        loadLibrary={handleLibrarySelect}
+        loadLibrary={setSelectedLibrary}
       />
-
       <Box
         component="main"
         sx={{
@@ -38,10 +26,9 @@ export default function Layout({ children }) {
           pr: 2,
           width: "100%",
           overflowX: "hidden",
-          transition: "margin-left 0.3s",
         }}
       >
-        {children}
+        <Outlet />
       </Box>
     </Box>
   );

@@ -10,14 +10,15 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getGeneralLibrary, getSteamLibrary, getEpicLibrary } from "../api/game";
+import { useLayout } from "../context/LayoutContext"; // ✅ Usa el contexto
 
 export default function Home() {
   const [games, setGames] = useState([]);
-  const [selectedLibrary, setSelectedLibrary] = useState("general");
   const navigate = useNavigate();
 
+  const { selectedLibrary } = useLayout(); // ✅ Usa el estado global
+
   const loadLibrary = async (type) => {
-    setSelectedLibrary(type);
     try {
       let response;
       if (type === "general") {
@@ -35,8 +36,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    loadLibrary("general");
-  }, []);
+    loadLibrary(selectedLibrary); // ✅ Cada vez que cambie, carga
+  }, [selectedLibrary]);
 
   return (
     <Box sx={{ mt: 2, pb: 4, pr: 4, pl: 2 }}>
