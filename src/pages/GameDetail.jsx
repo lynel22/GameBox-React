@@ -1,8 +1,6 @@
-// src/pages/GameDetail.jsx
-
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getGameDetail } from "../api/game";
+import { getGameDetail, unlockAchievement } from "../api/game";
 import {
   Box,
   Typography,
@@ -11,9 +9,12 @@ import {
   CircularProgress,
   Tooltip,
   LinearProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
 } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
@@ -21,6 +22,8 @@ export default function GameDetail() {
   const { gameId } = useParams();
   const [game, setGame] = useState(null);
   const [showFullDesc, setShowFullDesc] = useState(false);
+  const [selectedAchievement, setSelectedAchievement] = useState(null);
+  const [achievementDialogOpen, setAchievementDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchGameDetail = async () => {
@@ -66,7 +69,7 @@ export default function GameDetail() {
           >
             <Box
               sx={{
-                width: 760, // Ajusta si lo ves muy estrecho o ancho
+                width: 760,
                 height: 450,
                 borderRadius: 2,
                 overflow: "hidden",
@@ -85,7 +88,6 @@ export default function GameDetail() {
                 }}
               />
             </Box>
-
           </Box>
           <Typography variant="h4" mt={2} sx={{ textAlign: "left" }}>
             {game.name}
@@ -97,7 +99,7 @@ export default function GameDetail() {
           <Box sx={{ textAlign: "justify", position: "relative" }}>
             <Typography paragraph>
               {game.description.length > 300
-                ? `${game.description.slice(0, 300)}`
+                ? `${game.description.slice(0, 300)}...`
                 : game.description}
             </Typography>
 
@@ -111,24 +113,12 @@ export default function GameDetail() {
                   right: 10,
                   bottom: -8,
                   color: "var(--color-primary)",
-                  backgroundColor: "transparent",
-                  "&:hover": {
-                    backgroundColor: "transparent",
-                  },
-                  "&:active": {
-                    backgroundColor: "transparent",
-                  },
-                  "&:focus": {
-                    outline: "none",
-                  },
                 }}
               >
                 <MoreHorizIcon />
               </IconButton>
-
             )}
           </Box>
-
 
           <Typography sx={{ textAlign: "left" }}>
             <strong>Fecha de lanzamiento:</strong> {game.releaseDate}
@@ -162,8 +152,8 @@ export default function GameDetail() {
       <Box mt={2}>
         <Box display="flex" alignItems="center" gap={6} mt={0}>
           <Box display="flex" alignItems="center">
-            <AccessTimeIcon sx={{ mr: 1, fontSize: 28 }} /> {/* Icono más grande */}
-            <Typography variant="h6"> {/* Texto más grande */}
+            <AccessTimeIcon sx={{ mr: 1, fontSize: 28 }} />
+            <Typography variant="h6">
               {game.hoursPlayed?.toFixed(1) || 0} horas jugadas
             </Typography>
           </Box>
@@ -178,7 +168,6 @@ export default function GameDetail() {
           </Box>
         </Box>
       </Box>
-
 
       {/* Logros y amigos */}
       <Box
@@ -212,16 +201,29 @@ export default function GameDetail() {
 
           <Box display="flex" mt={2} ml={1} flexWrap="wrap">
             {game.achievements.map((ach, i) => (
-              <Tooltip key={i} title={ach.name} placement="top">
-                <Box
-                  component="img"
-                  src={ach.imageUrl}
-                  alt={ach.name}
-                  width={45}
-                  height={45}
-                  sx={{ opacity: ach.unlocked ? 1 : 0.3, mr: 1, mb: 1 }}
-                />
-              </Tooltip>
+              <Box
+                key={i}
+                component="img"
+                src={ach.imageUrl}
+                alt={ach.name}
+                width={45}
+                height={45}
+                sx={{
+                  opacity: ach.unlocked ? 1 : 0.3,
+                  mr: 1,
+                  mb: 1,
+                  cursor: "pointer",
+                  borderRadius: 1,
+                  transition: "transform 0.2s ease-in-out",
+                  "&:hover": {
+                    transform: "scale(1.1)",
+                  },
+                }}
+                onClick={() => {
+                  setSelectedAchievement(ach);
+                  setAchievementDialogOpen(true);
+                }}
+              />
             ))}
           </Box>
         </Box>
@@ -240,6 +242,8 @@ export default function GameDetail() {
           </Box>
         </Box>
       </Box>
+
+      {/* Dialogo: Descripción completa */}
       <Dialog
         open={showFullDesc}
         onClose={() => setShowFullDesc(false)}
@@ -253,9 +257,84 @@ export default function GameDetail() {
           </Typography>
         </DialogContent>
       </Dialog>
+
+      {/* Dialogo: Logro detallado */}
+      <Dialog
+        open={achievementDialogOpen}
+        onClose={() => setAchievementDialogOpen(false)}
+        maxWidth="xs"
+        fullWidth
+        sx={{  }}
+      >
+        {selectedAchievement && (
+          <>
+            <DialogTitle>
+              <Box display="flex" alignItems="center" gap={2}>
+                <Box
+                  component="img"
+                  src={selectedAchievement.imageUrl}
+                  alt={selectedAchievement.name}
+                  sx={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 1,
+                    boxShadow: 2,
+                  }}
+                />
+                <Typography variant="h6" >{selectedAchievement.name}</Typography>
+              </Box>
+            </DialogTitle>
+
+            <DialogContent>
+              <Typography variant="body1" gutterBottom>
+                {selectedAchievement.description}
+              </Typography>
+              {selectedAchievement.unlocked ? (
+                <Typography variant="body2" color="grey">
+                  DESBLOQUEADO EL{" "}
+                  {new Date(selectedAchievement.dateUnlocked).toLocaleString("es-ES", {
+                    day: "numeric",
+                    month: "numeric",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                  })}
+                </Typography>
+              ) : (
+                <Box mt={2} textAlign="left">
+                  <button
+                    style={{
+                      padding: "10px 20px",
+                      backgroundColor: "#1D5ECF",
+                      color: "white",
+                      border: "none",
+                      borderRadius: 5,
+                      cursor: "pointer",
+                    }}
+                    onClick={async () => {
+                      try {
+                        await unlockAchievement(gameId, selectedAchievement.id);
+                        selectedAchievement.unlocked = true;
+                        selectedAchievement.dateUnlocked = new Date().toISOString();
+                        setGame({ ...game }); // Forzar re-render
+                        setAchievementDialogOpen(false);
+                      } catch (error) {
+                        alert("Error al marcar logro como desbloqueado.");
+                        console.error(error);
+                      }
+                    }}
+                  >
+                    Marcar como desbloqueado
+                  </button>
+                </Box>
+              )}
+            </DialogContent>
+
+
+          </>
+        )}
+      </Dialog>
     </Box>
-
-    
-
   );
 }

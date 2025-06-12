@@ -15,3 +15,7 @@ export const getEpicLibrary = () => {
 export const getGameDetail = (gameId) => {
   return API.get(`/game/detail?gameId=${gameId}`)
 };
+
+export const unlockAchievement = (gameId, achievementId) => {
+  return API.post(`/game/add-achievement?gameId=${gameId}&achievementId=${achievementId}`);
+};
