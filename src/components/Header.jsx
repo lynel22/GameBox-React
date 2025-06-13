@@ -1,5 +1,3 @@
-// src/components/Header.jsx
-
 import {
   Box,
   IconButton,
@@ -20,15 +18,55 @@ import {
   History,
 } from "@mui/icons-material";
 import gameboxIcon from "../assets/icons/gamebox.png";
-import UserMenu from "./UserMenu";
 import steamIcon from "../assets/icons/steam.png";
 import epicIcon from "../assets/icons/epic.png";
+import UserMenu from "./UserMenu";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import useDebounce from "../hooks/useDebounce";
+import { searchGames } from "../api/game";
 
 const drawerWidth = 240;
 
 export default function Header({ open, toggleDrawer, selectedLibrary, loadLibrary }) {
   const navigate = useNavigate();
+
+  // 🔍 Buscador dinámico
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const debouncedQuery = useDebounce(query, 500);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      if (!debouncedQuery.trim()) {
+        setResults([]);
+        return;
+      }
+
+      try {
+        const res = await searchGames(debouncedQuery);
+        setResults(res.data || []);
+        console.log("Search results:", res.data);
+      } catch (err) {
+        console.error("Error searching games:", err);
+        setResults([]);
+      }
+    };
+
+    fetchResults();
+  }, [debouncedQuery]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!inputRef.current?.contains(e.target)) {
+        setShowResults(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -101,10 +139,8 @@ export default function Header({ open, toggleDrawer, selectedLibrary, loadLibrar
         sx={{
           position: "fixed",
           top: 0,
-          // left: 0,
           left: open ? `${drawerWidth}px` : 0,
           width: open ? `calc(100% - ${drawerWidth}px)` : "100%",
-
           right: 0,
           height: 100,
           display: "flex",
@@ -151,8 +187,11 @@ export default function Header({ open, toggleDrawer, selectedLibrary, loadLibrar
           </Box>
         </Box>
 
+        {/* 🔍 Input con resultados */}
         <Box
+          ref={inputRef}
           sx={{
+            position: "relative",
             display: "flex",
             alignItems: "center",
             borderRadius: 2,
@@ -167,8 +206,63 @@ export default function Header({ open, toggleDrawer, selectedLibrary, loadLibrar
           <InputBase
             placeholder="Buscar juegos…"
             sx={{ color: "inherit", flex: 1, height: "100%" }}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setShowResults(true)}
           />
           <SearchIcon sx={{ color: "#ccc" }} />
+
+          {showResults && results.length > 0 && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                bgcolor: "#1e1e1e",
+                zIndex: 10,
+                borderRadius: "0 0 8px 8px",
+                boxShadow: "0px 4px 12px rgba(0,0,0,0.4)",
+                maxHeight: "300px",
+                overflowY: "auto",
+                mt: 1,
+              }}
+            >
+              {results.map((game) => (
+                <Box
+                  key={game.id}
+                  onClick={() => {
+                    navigate(`/game/${game.id}`);
+                    setShowResults(false);
+                    setQuery("");
+                  }}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    px: 2,
+                    py: 1,
+                    cursor: "pointer",
+                    "&:hover": { backgroundColor: "#2a2a2a" },
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={game.imageUrl || "/default-image.jpg"}
+                    alt={game.name}
+                    sx={{ width: 40, height: 40, borderRadius: 1, mr: 2 }}
+                  />
+                  <Box>
+                    <Typography fontWeight="bold" sx={{ color: "#fff" }}>
+                      {game.name}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#ccc" }}>
+                      {game.releaseDate}, {game.developer.name}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          )}
         </Box>
 
         <UserMenu />

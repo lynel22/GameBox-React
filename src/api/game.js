@@ -19,3 +19,7 @@ export const getGameDetail = (gameId) => {
 export const unlockAchievement = (gameId, achievementId) => {
   return API.post(`/game/add-achievement?gameId=${gameId}&achievementId=${achievementId}`);
 };
+
+export const searchGames = (query) => {
+  return API.get(`/game/search?q=${encodeURIComponent(query)}`);
+}
