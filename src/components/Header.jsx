@@ -31,7 +31,6 @@ const drawerWidth = 240;
 export default function Header({ open, toggleDrawer, selectedLibrary, loadLibrary }) {
   const navigate = useNavigate();
 
-  // 🔍 Buscador dinámico
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
@@ -240,7 +239,7 @@ export default function Header({ open, toggleDrawer, selectedLibrary, loadLibrar
                     display: "flex",
                     alignItems: "center",
                     px: 2,
-                    py: 1,
+                    py: 2,
                     cursor: "pointer",
                     "&:hover": { backgroundColor: "#2a2a2a" },
                   }}
@@ -249,16 +248,36 @@ export default function Header({ open, toggleDrawer, selectedLibrary, loadLibrar
                     component="img"
                     src={game.imageUrl || "/default-image.jpg"}
                     alt={game.name}
-                    sx={{ width: 40, height: 40, borderRadius: 1, mr: 2 }}
+                    sx={{
+                      width: 60,
+                      height: 60,
+                      borderRadius: 1,
+                      mr: 3,
+                      objectFit: "cover",
+                    }}
                   />
-                  <Box>
-                    <Typography fontWeight="bold" sx={{ color: "#fff" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      textAlign: "center",
+                      justifyContent: "center",
+                      flex: 1,
+                    }}
+                  >
+                    <Typography fontWeight="bold" sx={{ color: "#fff", fontSize: "1.2rem" }}>
                       {game.name}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: "#ccc" }}>
-                      {game.releaseDate}, {game.developer.name}
+                    <Typography
+                      variant="body1"
+                      sx={{ color: "#ccc", fontSize: "0.95rem" }}
+                    >
+                      {game.releaseDate}
+                      {game.developer?.name ? `, ${game.developer.name}` : ""}
                     </Typography>
                   </Box>
+
                 </Box>
               ))}
             </Box>
