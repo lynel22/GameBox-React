@@ -24,13 +24,13 @@ export default function SidebarDrawer({ open, selectedLibrary, loadLibrary }) {
   const [libraryCounts, setLibraryCounts] = useState([]);
 
   useEffect(() => {
-  getLibraryGameCounts()
-    .then((res) => {
-      console.log("Library game counts response:", res); 
-      setLibraryCounts(res.data || []);
-    })
-    .catch((err) => console.error("Error loading library counts:", err));
-}, []);
+    getLibraryGameCounts()
+      .then((res) => {
+        console.log("Library game counts response:", res); 
+        setLibraryCounts(res.data || []);
+      })
+      .catch((err) => console.error("Error loading library counts:", err));
+  }, [selectedLibrary, open, loadLibrary]);
 
 
   return (
@@ -95,11 +95,31 @@ export default function SidebarDrawer({ open, selectedLibrary, loadLibrary }) {
                   )}
                 </ListItemIcon>
                 <ListItemText
-                  primary={`${store.name} (${store.gameCount})`}
+                  primary={
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <span>{store.name}</span>
+                      <Box
+                        sx={{
+                          bgcolor: "#424242", 
+                          color: "#fff",
+                          px: 1,
+                          py: 0.25,
+                          borderRadius: 1,
+                          fontSize: "1rem",
+                          ml: 1,
+                          minWidth: 24,
+                          textAlign: "center",
+                        }}
+                      >
+                        {store.gameCount}
+                      </Box>
+                    </Box>
+                  }
                 />
               </ListItemButton>
             );
           })}
+
         </List>
 
         <Typography variant="overline" sx={{ mt: 4, color: "#888" }}>
