@@ -22,4 +22,8 @@ export const unlockAchievement = (gameId, achievementId) => {
 
 export const searchGames = (query) => {
   return API.get(`/game/search?q=${encodeURIComponent(query)}`);
-}
+};
+
+export const addGameToLibraries = (gameId, storeIds) => {
+  return API.post(`/game/add-game-to-libraries?gameId=${gameId}`, { storeIds });
+};

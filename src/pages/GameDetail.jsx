@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getGameDetail, unlockAchievement } from "../api/game";
+import { getGameDetail, unlockAchievement, addGameToLibraries } from "../api/game";
 import {
   Box,
   Typography,
@@ -14,9 +14,13 @@ import {
   DialogContent,
   IconButton,
 } from "@mui/material";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { Button } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import storeLogos from "../constants/storelogos"; // ajusta la ruta según tu estructura
+
 
 export default function GameDetail() {
   const { gameId } = useParams();
@@ -25,11 +29,16 @@ export default function GameDetail() {
   const [selectedAchievement, setSelectedAchievement] = useState(null);
   const [achievementDialogOpen, setAchievementDialogOpen] = useState(false);
 
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [selectedStoreIds, setSelectedStoreIds] = useState([]);
+  const [isAdding, setIsAdding] = useState(false);
+
   useEffect(() => {
     const fetchGameDetail = async () => {
       try {
         const response = await getGameDetail(gameId);
         setGame(response.data);
+        console.log("Game details fetched:", response.data);
       } catch (error) {
         console.error("Error fetching game details:", error);
       }
@@ -49,6 +58,14 @@ export default function GameDetail() {
   const unlocked = game.achievements.filter((a) => a.unlocked).length;
   const total = game.achievements.length;
   const percentage = Math.round((unlocked / total) * 100);
+
+  const toggleStoreSelection = (storeId) => {
+    setSelectedStoreIds((prev) =>
+      prev.includes(storeId)
+        ? prev.filter((id) => id !== storeId)
+        : [...prev, storeId]
+    );
+  };
 
   return (
     <Box sx={{ px: { xs: 2, md: 6 }, pb: 6 }}>
@@ -148,25 +165,57 @@ export default function GameDetail() {
         </Box>
       </Box>
 
-      {/* Stats generales */}
+      {/* Stats generales o botón de añadir */}
       <Box mt={2}>
-        <Box display="flex" alignItems="center" gap={6} mt={0}>
-          <Box display="flex" alignItems="center">
-            <AccessTimeIcon sx={{ mr: 1, fontSize: 28 }} />
-            <Typography variant="h6">
-              {game.hoursPlayed?.toFixed(1) || 0} horas jugadas
-            </Typography>
+        {game.ownedByUser ? (
+          <Box display="flex" alignItems="center" gap={6}>
+            <Box display="flex" alignItems="center">
+              <AccessTimeIcon sx={{ mr: 1, fontSize: 28 }} />
+              <Typography variant="h6">
+                {game.hoursPlayed?.toFixed(1) || 0} horas jugadas
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center">
+              <CalendarTodayIcon sx={{ mr: 1, fontSize: 28 }} />
+              <Typography variant="h6">
+                Última sesión:{" "}
+                {game.lastPlayed
+                  ? new Date(game.lastPlayed).toLocaleDateString()
+                  : "Nunca"}
+              </Typography>
+            </Box>
           </Box>
-          <Box display="flex" alignItems="center">
-            <CalendarTodayIcon sx={{ mr: 1, fontSize: 28 }} />
-            <Typography variant="h6">
-              Última sesión:{" "}
-              {game.lastPlayed
-                ? new Date(game.lastPlayed).toLocaleDateString()
-                : "Nunca"}
-            </Typography>
+        ) : (
+          <Box mt={2}>
+            <Box display="flex" justifyContent="flex-start" mt={3}>
+              <Button
+                variant="text"
+                startIcon={
+                  <AddCircleIcon
+                    sx={{
+                      color: "#fff",
+                    }}
+                  />
+                }
+                onClick={() => setAddDialogOpen(true)}
+                sx={{
+                  color: "#1D5ECF",
+                  fontWeight: 600,
+                  textTransform: "none",
+                  border: "none",
+                  backgroundColor: "rgba(29, 94, 207, 0.08)",
+                  "&:hover": {
+                    backgroundColor: "rgba(29, 94, 207, 0.08)",
+                  },
+                }}
+              >
+                Añadir a tu biblioteca
+              </Button>
+            </Box>
+
+
           </Box>
-        </Box>
+        )}
       </Box>
 
       {/* Logros y amigos */}
@@ -244,28 +293,15 @@ export default function GameDetail() {
       </Box>
 
       {/* Dialogo: Descripción completa */}
-      <Dialog
-        open={showFullDesc}
-        onClose={() => setShowFullDesc(false)}
-        maxWidth="sm"
-        fullWidth
-      >
+      <Dialog open={showFullDesc} onClose={() => setShowFullDesc(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Descripción completa</DialogTitle>
         <DialogContent>
-          <Typography sx={{ textAlign: "justify" }}>
-            {game.description}
-          </Typography>
+          <Typography sx={{ textAlign: "justify" }}>{game.description}</Typography>
         </DialogContent>
       </Dialog>
 
       {/* Dialogo: Logro detallado */}
-      <Dialog
-        open={achievementDialogOpen}
-        onClose={() => setAchievementDialogOpen(false)}
-        maxWidth="xs"
-        fullWidth
-        sx={{  }}
-      >
+      <Dialog open={achievementDialogOpen} onClose={() => setAchievementDialogOpen(false)} maxWidth="xs" fullWidth>
         {selectedAchievement && (
           <>
             <DialogTitle>
@@ -274,14 +310,9 @@ export default function GameDetail() {
                   component="img"
                   src={selectedAchievement.imageUrl}
                   alt={selectedAchievement.name}
-                  sx={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: 1,
-                    boxShadow: 2,
-                  }}
+                  sx={{ width: 60, height: 60, borderRadius: 1, boxShadow: 2 }}
                 />
-                <Typography variant="h6" >{selectedAchievement.name}</Typography>
+                <Typography variant="h6">{selectedAchievement.name}</Typography>
               </Box>
             </DialogTitle>
 
@@ -317,7 +348,7 @@ export default function GameDetail() {
                         await unlockAchievement(gameId, selectedAchievement.id);
                         selectedAchievement.unlocked = true;
                         selectedAchievement.dateUnlocked = new Date().toISOString();
-                        setGame({ ...game }); // Forzar re-render
+                        setGame({ ...game });
                         setAchievementDialogOpen(false);
                       } catch (error) {
                         alert("Error al marcar logro como desbloqueado.");
@@ -330,10 +361,72 @@ export default function GameDetail() {
                 </Box>
               )}
             </DialogContent>
-
-
           </>
         )}
+      </Dialog>
+
+      {/* Dialogo: Añadir a biblioteca */}
+      <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Selecciona una o varias tiendas</DialogTitle>
+        <DialogContent>
+          <Box display="flex" flexWrap="wrap" justifyContent="center" gap={3} mt={2}>
+            {game.stores.map((store) => (
+              <Box
+                key={store.id}
+                component="img"
+                src={storeLogos[store.name] || "/assets/logos/default.png"}
+                alt={store.name}
+                onClick={() => toggleStoreSelection(store.id)}
+                sx={{
+                  width: 100,
+                  height: 100,
+                  borderRadius: 2,
+                  cursor: "pointer",
+                  boxShadow: selectedStoreIds.includes(store.id) ? 4 : 1,
+                  filter: selectedStoreIds.includes(store.id)
+                    ? "none"
+                    : "grayscale(100%) opacity(0.5)",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    filter: "none",
+                  },
+                }}
+              />
+            ))}
+          </Box>
+
+          <Box mt={4} display="flex" justifyContent="center">
+            <button
+              onClick={async () => {
+                if (!selectedStoreIds.length) return;
+                setIsAdding(true);
+                try {
+                  await addGameToLibraries(game.id, selectedStoreIds);
+                  setGame({ ...game, ownedByUser: true });
+                  setAddDialogOpen(false);
+                  setSelectedStoreIds([]);
+                } catch (error) {
+                  console.error("Error al añadir juego:", error);
+                  alert("Error al añadir el juego a tu biblioteca.");
+                } finally {
+                  setIsAdding(false);
+                }
+              }}
+              disabled={selectedStoreIds.length === 0 || isAdding}
+              style={{
+                padding: "10px 20px",
+                backgroundColor: selectedStoreIds.length ? "#1D5ECF" : "#ccc",
+                color: "#fff",
+                border: "none",
+                borderRadius: 5,
+                fontWeight: "bold",
+                cursor: selectedStoreIds.length ? "pointer" : "not-allowed",
+              }}
+            >
+              {isAdding ? "Añadiendo..." : "Añadir"}
+            </button>
+          </Box>
+        </DialogContent>
       </Dialog>
     </Box>
   );
