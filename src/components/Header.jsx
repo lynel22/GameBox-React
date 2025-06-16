@@ -25,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
 import { searchGames } from "../api/game";
+import SidebarDrawer from "./SidebarDrawer";
 
 const drawerWidth = 240;
 
@@ -69,69 +70,7 @@ export default function Header({ open, toggleDrawer, selectedLibrary, loadLibrar
 
   return (
     <>
-      {/* Drawer lateral */}
-      <Drawer
-        variant="persistent"
-        open={open}
-        sx={{
-          width: drawerWidth,
-          display: open ? "block" : "none",
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            bgcolor: "#1e1e1e",
-            color: "#fff",
-            borderRight: 0,
-            height: "100vh",
-          },
-        }}
-      >
-        <Box sx={{ p: 2 }}>
-          <Typography variant="overline" sx={{ color: "#888" }}>
-            BIBLIOTECAS
-          </Typography>
-          <List>
-            <ListItemButton selected={selectedLibrary === "general"} onClick={() => { loadLibrary("general"); navigate("/"); }}>
-              <ListItemIcon>
-                <StorageIcon sx={{ color: "#1D5ECF" }} />
-              </ListItemIcon>
-              <ListItemText primary="General" />
-            </ListItemButton>
-
-            <ListItemButton selected={selectedLibrary === "steam"} onClick={() => { loadLibrary("steam"); navigate("/"); }}>
-              <ListItemIcon>
-                <img src={steamIcon} alt="Steam" style={{ width: 24, height: 24 }} />
-              </ListItemIcon>
-              <ListItemText primary="Steam" />
-            </ListItemButton>
-
-            <ListItemButton selected={selectedLibrary === "epic"} onClick={() => { loadLibrary("epic"); navigate("/"); }}>
-              <ListItemIcon>
-                <img src={epicIcon} alt="Epic Games" style={{ width: 24, height: 24 }} />
-              </ListItemIcon>
-              <ListItemText primary="Epic Games" />
-            </ListItemButton>
-          </List>
-
-          <Typography variant="overline" sx={{ mt: 4, color: "#888" }}>
-            COLECCIONES
-          </Typography>
-          <List>
-            <ListItemButton>
-              <ListItemIcon>
-                <StarBorder sx={{ color: "#1D5ECF" }} />
-              </ListItemIcon>
-              <ListItemText primary="Favoritos" />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemIcon>
-                <History sx={{ color: "#1D5ECF" }} />
-              </ListItemIcon>
-              <ListItemText primary="Recientes" />
-            </ListItemButton>
-          </List>
-        </Box>
-      </Drawer>
+      <SidebarDrawer open={open} selectedLibrary={selectedLibrary} loadLibrary={loadLibrary} />
 
       {/* Barra superior */}
       <Box

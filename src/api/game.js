@@ -4,12 +4,8 @@ export const getGeneralLibrary = () => {
   return API.get("/game/library");
 };
 
-export const getSteamLibrary = () => {
-  return API.get("/game/library/steam");
-};
-
-export const getEpicLibrary = () => {
-  return API.get("/game/library/epic");
+export const getLibraryByStore = (storeName) => {
+  return API.get(`/game/library-by-store?store=${encodeURIComponent(storeName)}`);
 };
 
 export const getGameDetail = (gameId) => {
@@ -26,4 +22,8 @@ export const searchGames = (query) => {
 
 export const addGameToLibraries = (gameId, storeIds) => {
   return API.post(`/game/add-game-to-libraries?gameId=${gameId}`, { storeIds });
+};
+
+export const getLibraryGameCounts = () => {
+  return API.get("/game/library-game-count");
 };

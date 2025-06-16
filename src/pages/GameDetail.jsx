@@ -378,6 +378,7 @@ export default function GameDetail() {
                 alt={store.name}
                 onClick={() => toggleStoreSelection(store.id)}
                 sx={{
+                  objectFit: "cover",
                   width: 100,
                   height: 100,
                   borderRadius: 2,

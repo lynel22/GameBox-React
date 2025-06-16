@@ -9,25 +9,35 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { getGeneralLibrary, getSteamLibrary, getEpicLibrary } from "../api/game";
-import { useLayout } from "../context/LayoutContext"; // ✅ Usa el contexto
+import { getGeneralLibrary, getLibraryByStore } from "../api/game";
+import { useLayout } from "../context/LayoutContext"; 
 
 export default function Home() {
   const [games, setGames] = useState([]);
   const navigate = useNavigate();
 
-  const { selectedLibrary } = useLayout(); // ✅ Usa el estado global
+  const { selectedLibrary } = useLayout(); 
 
   const loadLibrary = async (type) => {
     try {
       let response;
       if (type === "general") {
+        console.log("Loading general library");
         response = await getGeneralLibrary();
-      } else if (type === "steam") {
-        response = await getSteamLibrary();
-      } else if (type === "epic") {
-        response = await getEpicLibrary();
+      } else {
+        // // type sería "steam", "epic", etc.
+        // const storeMap = {
+        //   steam: "Steam",
+        //   epic: "Epic Games",
+        // };
+        // const storeName = storeMap[type];
+        // if (!storeName) {
+        //   throw new Error(`Unknown library type: ${type}`);
+        // }
+        console.log("Loading library for type:", type);
+        response = await getLibraryByStore(type);
       }
+
       setGames(response.data);
     } catch (error) {
       console.error("Error loading games:", error);
@@ -35,8 +45,9 @@ export default function Home() {
     }
   };
 
+
   useEffect(() => {
-    loadLibrary(selectedLibrary); // ✅ Cada vez que cambie, carga
+    loadLibrary(selectedLibrary); 
   }, [selectedLibrary]);
 
   return (
