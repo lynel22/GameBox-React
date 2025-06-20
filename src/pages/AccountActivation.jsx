@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Typography, Container, CircularProgress } from "@mui/material";
 import axios from "axios";
@@ -8,16 +8,16 @@ export default function AccountActivation() {
   const token = searchParams.get("token");
   const navigate = useNavigate();
   const [status, setStatus] = useState("loading"); // 'loading' | 'success' | 'error'
+  const hasRun = useRef(false);
 
   useEffect(() => {
+    if (!token || hasRun.current) return;
 
-    if(!token)
-      return 
+    hasRun.current = true;
 
     const verifyAccount = async () => {
       try {
         await axios.get(`${import.meta.env.VITE_API_URL}/user/verify/account?token=${token}`);
-
         setStatus("success");
         setTimeout(() => navigate("/"), 3000);
       } catch (err) {
@@ -25,8 +25,7 @@ export default function AccountActivation() {
       }
     };
 
-    if (token) verifyAccount();
-    else setStatus("error");
+    verifyAccount();
   }, [token, navigate]);
 
   return (
