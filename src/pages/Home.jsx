@@ -25,15 +25,6 @@ export default function Home() {
         console.log("Loading general library");
         response = await getGeneralLibrary();
       } else {
-        // // type sería "steam", "epic", etc.
-        // const storeMap = {
-        //   steam: "Steam",
-        //   epic: "Epic Games",
-        // };
-        // const storeName = storeMap[type];
-        // if (!storeName) {
-        //   throw new Error(`Unknown library type: ${type}`);
-        // }
         console.log("Loading library for type:", type);
         response = await getLibraryByStore(type);
       }

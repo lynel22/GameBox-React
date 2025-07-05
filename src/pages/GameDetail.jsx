@@ -19,7 +19,12 @@ import { Button } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import storeLogos from "../constants/storelogos"; // ajusta la ruta según tu estructura
+import storeLogos from "../constants/storelogos"; 
+import { addGameToWishlist, removeGameFromWishlist } from "../api/game";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import DialogActions from "@mui/material/DialogActions";
+
 
 
 export default function GameDetail() {
@@ -32,12 +37,16 @@ export default function GameDetail() {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [selectedStoreIds, setSelectedStoreIds] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [wishlistDialogOpen, setWishlistDialogOpen] = useState(false);
+
 
   useEffect(() => {
     const fetchGameDetail = async () => {
       try {
         const response = await getGameDetail(gameId);
         setGame(response.data);
+        setIsInWishlist(response.data.inWishlist);
         console.log("Game details fetched:", response.data);
       } catch (error) {
         console.error("Error fetching game details:", error);
@@ -210,6 +219,47 @@ export default function GameDetail() {
                 }}
               >
                 Añadir a tu biblioteca
+              </Button>
+              
+              {/* Botón de wishlist */}
+              <Button
+                variant="text"
+                startIcon={
+                  isInWishlist ? (
+                    <FavoriteIcon sx={{ color: "#D81B60" }} />
+                  ) : (
+                    <FavoriteBorderIcon sx={{ color: "#D81B60" }} />
+                  )
+                }
+                onClick={async () => {
+                  if (isInWishlist) {
+                    setWishlistDialogOpen(true); 
+                  } else {
+                    try {
+                      await addGameToWishlist(game.id);
+                      setIsInWishlist(true);
+                    } catch (error) {
+                      console.error("Error al añadir a la wishlist:", error);
+                    }
+                  }
+                }}
+                sx={{
+                  color: "#D81B60",
+                  fontWeight: 600,
+                  textTransform: "none",
+                  ml: 2,
+                  border: "none",
+                  backgroundColor: isInWishlist
+                    ? "rgba(216, 27, 96, 0.15)"
+                    : "rgba(216, 27, 96, 0.08)",
+                  "&:hover": {
+                    backgroundColor: isInWishlist
+                      ? "rgba(216, 27, 96, 0.2)"
+                      : "rgba(216, 27, 96, 0.12)",
+                  },
+                }}
+              >
+                {isInWishlist ? "En lista de deseados" : "Añadir a lista de deseados"}
               </Button>
             </Box>
 
@@ -429,6 +479,41 @@ export default function GameDetail() {
           </Box>
         </DialogContent>
       </Dialog>
+      
+      <Dialog
+        open={wishlistDialogOpen}
+        onClose={() => setWishlistDialogOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>Eliminar de la lista de deseados</DialogTitle>
+        <DialogContent>
+          <Typography>
+            ¿Estás seguro de que quieres eliminar este juego de tu lista de deseados?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setWishlistDialogOpen(false)} color="inherit">
+            Cancelar
+          </Button>
+          <Button
+            onClick={async () => {
+              try {
+                await removeGameFromWishlist(game.id);
+                setIsInWishlist(false);
+                setWishlistDialogOpen(false);
+              } catch (error) {
+                console.error("Error al eliminar de la wishlist:", error);
+                alert("No se pudo eliminar el juego de la lista de deseados.");
+              }
+            }}
+            color="error"
+          >
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Box>
   );
 }

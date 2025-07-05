@@ -27,3 +27,11 @@ export const addGameToLibraries = (gameId, storeIds) => {
 export const getLibraryGameCounts = () => {
   return API.get("/game/library-game-count");
 };
+
+export const addGameToWishlist = (gameId) => {
+  return API.post(`/game/add-game-to-wishlist?gameId=${gameId}`);
+};
+
+export const removeGameFromWishlist = (gameId) => {
+  return API.delete(`/game/remove-game-from-wishlist?gameId=${gameId}`);
+}
