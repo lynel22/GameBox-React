@@ -125,7 +125,7 @@ export default function Header({ open, toggleDrawer, selectedLibrary, loadLibrar
           </Box>
         </Box>
 
-        {/* 🔍 Input con resultados */}
+        {/* Input con resultados */}
         <Box
           ref={inputRef}
           sx={{

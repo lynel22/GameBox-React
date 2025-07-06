@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import storeLogos from "../constants/storelogos";
 import { getLibraryGameCounts } from "../api/game";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 const drawerWidth = 240;
 
@@ -50,7 +51,7 @@ export default function SidebarDrawer({ open, selectedLibrary, loadLibrary }) {
         },
       }}
     >
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ p: 2, overflowY: "hidden" }}>
         <Typography variant="overline" sx={{ color: "#888" }}>
           BIBLIOTECAS
         </Typography>
@@ -126,6 +127,12 @@ export default function SidebarDrawer({ open, selectedLibrary, loadLibrary }) {
           COLECCIONES
         </Typography>
         <List>
+          <ListItemButton onClick={() => navigate("/wishlist")}>
+            <ListItemIcon>
+              <FavoriteBorderIcon sx={{ color: "#D81B60" }} />
+            </ListItemIcon>
+            <ListItemText primary="Lista de deseados" />
+          </ListItemButton>
           <ListItemButton>
             <ListItemIcon>
               <StarBorder sx={{ color: "#1D5ECF" }} />

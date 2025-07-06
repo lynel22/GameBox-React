@@ -11,6 +11,7 @@ import UserProfile from "./pages/UserProfile";
 import SteamCallback from "./pages/SteamCallback";
 import GameDetail from "./pages/GameDetail";
 import Layout from "./components/Layout";
+import Wishlist from "./pages/Wishlist";
 
 export default function AppRoutes() {
   return (
@@ -26,6 +27,7 @@ export default function AppRoutes() {
         {/* Rutas con Layout */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/wishlist" element={<Wishlist />} /> 
 
           {/* Rutas privadas dentro del layout */}
           <Route element={<RequireAuth />}>

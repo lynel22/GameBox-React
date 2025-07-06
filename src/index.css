@@ -120,7 +120,39 @@ button:focus-visible {
   background-color: var(--color-primary-hover) !important;
 }
 
+/* Estilo base del ButtonGroup */
+.button-group-dark .MuiButtonGroup-root .MuiButton-root,
+.button-group-dark .MuiButton-root {
+  background-color: #000 !important;
+  color: #fff !important;
+  text-transform: none;
+  font-size: 0.85rem;
+  border-radius: 0 !important;
+  transition: background-color 0.2s ease;
+  outline: none !important;
+  box-shadow: none !important;
+}
 
+/* Botón activo */
+.button-group-dark .MuiButton-root.active {
+  background-color: #222 !important;
+}
+
+/* Hover */
+.button-group-dark .MuiButton-root:hover {
+  background-color: #111 !important;
+}
+
+/* Bordes redondeados en extremos */
+.button-group-dark .MuiButton-root:first-of-type {
+  border-top-left-radius: 8px !important;
+  border-bottom-left-radius: 8px !important;
+}
+
+.button-group-dark .MuiButton-root:last-of-type {
+  border-top-right-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
+}
 
 
 /* Modo claro opcional

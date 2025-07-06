@@ -35,3 +35,7 @@ export const addGameToWishlist = (gameId) => {
 export const removeGameFromWishlist = (gameId) => {
   return API.delete(`/game/remove-game-from-wishlist?gameId=${gameId}`);
 }
+
+export const getUserWishlist = () => {
+  return API.get("/game/user-wishlist");
+};

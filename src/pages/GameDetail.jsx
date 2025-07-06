@@ -24,7 +24,9 @@ import { addGameToWishlist, removeGameFromWishlist } from "../api/game";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import DialogActions from "@mui/material/DialogActions";
-
+import dayjs from "dayjs";
+import "dayjs/locale/es";
+dayjs.locale("es");
 
 
 export default function GameDetail() {
