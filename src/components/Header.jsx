@@ -17,7 +17,7 @@ import {
   StarBorder,
   History,
 } from "@mui/icons-material";
-import gameboxIcon from "../assets/icons/gamebox.png";
+import gameboxIcon from "../assets/icons/gamebox_logo_name.png";
 import steamIcon from "../assets/icons/steam.png";
 import epicIcon from "../assets/icons/epic.png";
 import UserMenu from "./UserMenu";
@@ -117,11 +117,11 @@ export default function Header({ open, toggleDrawer, selectedLibrary, loadLibrar
               component="img"
               src={gameboxIcon}
               alt="Gamebox Icon"
-              sx={{ width: 65, height: 65, mr: 1 }}
+              sx={{ width: "auto", height: 60, mr: 1 }}
             />
-            <Typography variant="h5" noWrap sx={{ color: "#fff", fontWeight: 600 }}>
+            {/* <Typography variant="h5" noWrap sx={{ color: "#fff", fontWeight: 600 }}>
               Gamebox
-            </Typography>
+            </Typography> */}
           </Box>
         </Box>
 
