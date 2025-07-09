@@ -39,3 +39,9 @@ export const removeGameFromWishlist = (gameId) => {
 export const getUserWishlist = () => {
   return API.get("/game/user-wishlist");
 };
+
+
+export const getDeals = (store) => {
+  const query = store ? `?store=${encodeURIComponent(store)}` : "";
+  return API.get(`/game/deals${query}`);
+};

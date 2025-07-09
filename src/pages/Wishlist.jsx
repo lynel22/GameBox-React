@@ -57,8 +57,8 @@ export default function Wishlist() {
   };
 
   return (
-    <Box sx={{ mt: 4, px: 4 }}>
-      <Typography variant="h4" gutterBottom sx={{ textAlign: "left", fontWeight: 600 }}>
+    <Box sx={{ mt: 2, px: 4 }}>
+      <Typography variant="h4" gutterBottom sx={{ textAlign: "left", fontWeight: 500 }}>
         Lista de deseados
       </Typography>
 

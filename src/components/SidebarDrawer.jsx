@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import storeLogos from "../constants/storelogos";
 import { getLibraryGameCounts } from "../api/game";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 
 const drawerWidth = 240;
 
@@ -133,19 +134,23 @@ export default function SidebarDrawer({ open, selectedLibrary, loadLibrary }) {
             </ListItemIcon>
             <ListItemText primary="Lista de deseados" />
           </ListItemButton>
+
+          <ListItemButton onClick={() => navigate("/deals")}>
+            <ListItemIcon>
+              <LocalOfferOutlinedIcon sx={{ color: "#00ff99" }} />
+            </ListItemIcon>
+            <ListItemText primary="Ofertas" />
+          </ListItemButton>
+
           <ListItemButton>
             <ListItemIcon>
               <StarBorder sx={{ color: "#1D5ECF" }} />
             </ListItemIcon>
             <ListItemText primary="Favoritos" />
           </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <History sx={{ color: "#1D5ECF" }} />
-            </ListItemIcon>
-            <ListItemText primary="Recientes" />
-          </ListItemButton>
+
         </List>
+
       </Box>
     </Drawer>
   );
