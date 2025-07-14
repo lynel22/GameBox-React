@@ -229,20 +229,39 @@ export default function Wishlist() {
               minWidth: 120,
             }}
           >
-            <Typography variant="h6" color="limegreen">
-              -90%
-            </Typography>
-            <Typography color="white">3,99€</Typography>
-            <Typography
-              sx={{
-                textDecoration: "line-through",
-                fontSize: "0.8rem",
-                color: "#aaa",
-              }}
-            >
-              39,99€
-            </Typography>
+            {item.deals && item.deals.length > 0 ? (
+              (() => {
+                const bestDeal = item.deals.reduce((min, deal) =>
+                  deal.salePrice < min.salePrice ? deal : min
+                );
+                const discount = Math.round(
+                  (1 - bestDeal.salePrice / bestDeal.normalPrice) * 100
+                );
+                return (
+                  <>
+                    <Typography variant="h6" color="limegreen">
+                      -{discount}%
+                    </Typography>
+                    <Typography color="white">
+                      {bestDeal.salePrice.toFixed(2)}€
+                    </Typography>
+                    <Typography
+                      sx={{
+                        textDecoration: "line-through",
+                        fontSize: "0.8rem",
+                        color: "#aaa",
+                      }}
+                    >
+                      {bestDeal.normalPrice.toFixed(2)}€
+                    </Typography>
+                  </>
+                );
+              })()
+            ) : (
+              <Typography color="gray">Sin ofertas</Typography>
+            )}
           </Box>
+
         </Box>
       ))}
     </Box>
