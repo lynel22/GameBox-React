@@ -172,6 +172,76 @@ export default function GameDetail() {
                 label={genre.spanishName || genre.name}
               />
             ))}
+
+            {/* Oferta destacada justo debajo de los géneros */}
+            {game.deals?.length > 0 && (
+              <Box mt={3}>
+                <a
+                  href={game.deals[0].dealLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: "none" }}
+                >
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    gap={2}
+                    sx={{
+                      bgcolor: "#2a2a2a",
+                      p: 2,
+                      borderRadius: 2,
+                      boxShadow: 2,
+                      width: "fit-content",
+                      cursor: "pointer",
+                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                      "&:hover": {
+                        transform: "scale(1.02)",
+                        boxShadow: 4,
+                      },
+                    }}
+                  >
+                    {/* Logo tienda */}
+                    {storeLogos[game.deals[0].storeName] && (
+                      <Tooltip title={game.deals[0].storeName}>
+                        <img
+                          src={storeLogos[game.deals[0].storeName]}
+                          alt={game.deals[0].storeName}
+                          style={{ width: 32, height: 32 }}
+                        />
+                      </Tooltip>
+                    )}
+
+                    {/* Precios */}
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        color="limegreen"
+                        sx={{ fontWeight: 600 }}
+                      >
+                        -{Math.round(game.deals[0].savings)}%
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{ color: "white", fontWeight: 600, fontSize: "1rem" }}
+                      >
+                        {parseFloat(game.deals[0].salePrice).toFixed(2)}€
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          textDecoration: "line-through",
+                          color: "#aaa",
+                          fontSize: "0.8rem",
+                        }}
+                      >
+                        {parseFloat(game.deals[0].normalPrice).toFixed(2)}€
+                      </Typography>
+                    </Box>
+                  </Box>
+                </a>
+              </Box>
+            )}
+
           </Box>
         </Box>
       </Box>
@@ -198,16 +268,17 @@ export default function GameDetail() {
           </Box>
         ) : (
           <Box mt={2}>
-            <Box display="flex" justifyContent="flex-start" mt={3}>
+            <Box
+              display="flex"
+              justifyContent="flex-start"
+              alignItems="center"
+              mt={2}
+              gap={2}
+            >
+              {/* Botón añadir a biblioteca */}
               <Button
                 variant="text"
-                startIcon={
-                  <AddCircleIcon
-                    sx={{
-                      color: "#fff",
-                    }}
-                  />
-                }
+                startIcon={<AddCircleIcon sx={{ color: "#fff" }} />}
                 onClick={() => setAddDialogOpen(true)}
                 sx={{
                   color: "#1D5ECF",
@@ -222,8 +293,8 @@ export default function GameDetail() {
               >
                 Añadir a tu biblioteca
               </Button>
-              
-              {/* Botón de wishlist */}
+
+              {/* Botón wishlist */}
               <Button
                 variant="text"
                 startIcon={
@@ -235,7 +306,7 @@ export default function GameDetail() {
                 }
                 onClick={async () => {
                   if (isInWishlist) {
-                    setWishlistDialogOpen(true); 
+                    setWishlistDialogOpen(true);
                   } else {
                     try {
                       await addGameToWishlist(game.id);
@@ -249,7 +320,6 @@ export default function GameDetail() {
                   color: "#D81B60",
                   fontWeight: 600,
                   textTransform: "none",
-                  ml: 2,
                   border: "none",
                   backgroundColor: isInWishlist
                     ? "rgba(216, 27, 96, 0.15)"
@@ -264,11 +334,10 @@ export default function GameDetail() {
                 {isInWishlist ? "En lista de deseados" : "Añadir a lista de deseados"}
               </Button>
             </Box>
-
-
           </Box>
         )}
       </Box>
+
 
       {/* Logros y amigos */}
       <Box
