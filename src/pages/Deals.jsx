@@ -77,111 +77,119 @@ export default function Deals() {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {sortedDeals.map((deal, idx) => (
           <Grid item xs={12} md={6} key={idx}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                bgcolor: "#2a2a2a",
-                borderRadius: 2,
-                overflow: "hidden",
-                boxShadow: 2,
-                position: "relative",
-                height: 110,
-                width: "100%",
-                maxWidth: 570,
-                minWidth: 570,
-                mx: "auto",
-              }}
+            <a
+              href={deal.dealUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: "none" }}
             >
-              <CardMedia
-                component="img"
-                image={deal.gameImageUrl || "/default-image.jpg"}
-                alt={deal.gameTitle}
+              <Box
                 sx={{
-                  width: 100,
-                  height: "100%",
-                  objectFit: "cover",
+                  display: "flex",
+                  flexDirection: "row",
+                  bgcolor: "#2a2a2a",
+                  borderRadius: 2,
+                  overflow: "hidden",
+                  boxShadow: 2,
+                  position: "relative",
+                  height: 110,
+                  width: "100%",
+                  maxWidth: 570,
+                  minWidth: 570,
+                  mx: "auto",
                   cursor: "pointer",
                 }}
-              />
+              >
+                <CardMedia
+                  component="img"
+                  image={deal.gameImageUrl || "/default-image.jpg"}
+                  alt={deal.gameTitle}
+                  sx={{
+                    width: 100,
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
 
-              <Box sx={{ flex: 1, p: 2, textAlign: "left" }}>
-                <Link
-                  to={`/game/${deal.gameId}`}
-                  style={{ textDecoration: "none" }}
-                >
-                  <Typography
-                    variant="subtitle1"
-                    sx={{
-                      fontWeight: 500,
-                      fontSize: "1.1rem",
-                      color: "white",
-                      "&:hover": {
-                        textDecoration: "underline",
+                <Box sx={{ flex: 1, p: 2, textAlign: "left" }}>
+                  <Link
+                    to={`/game/${deal.gameId}`}
+                    style={{ textDecoration: "none" }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: "1.1rem",
                         color: "white",
-                      },
+                        "&:hover": {
+                          textDecoration: "underline",
+                          color: "white",
+                        },
+                      }}
+                    >
+                      {deal.gameTitle}
+                    </Typography>
+                  </Link>
+
+                  <Box
+                    sx={{
+                      mt: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 2,
+                      position: "absolute",
+                      bottom: 20,
+                      right: 100,
                     }}
                   >
-                    {deal.gameTitle}
-                  </Typography>
-                </Link>
+                    {storeLogos[deal.storeName] && (
+                      <Tooltip title={deal.storeName}>
+                        <img
+                          src={storeLogos[deal.storeName]}
+                          alt={deal.storeName}
+                          style={{ width: 24, height: 24 }}
+                        />
+                      </Tooltip>
+                    )}
+                    <Chip
+                      label={`-${Math.round(deal.savings)}%`}
+                      size="small"
+                      sx={{ bgcolor: "#3a3a3a", color: "limegreen" }}
+                    />
+                  </Box>
+                </Box>
 
                 <Box
                   sx={{
-                    mt: 1,
+                    px: 2,
                     display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
                     alignItems: "center",
-                    gap: 2,
-                    position: "absolute",
-                    bottom : 20,
-                    right: 100,
+                    bgcolor: "#1b1b1b",
+                    minWidth: 90,
                   }}
                 >
-                  {storeLogos[deal.storeName] && (
-                    <Tooltip title={deal.storeName}>
-                      <img
-                        src={storeLogos[deal.storeName]}
-                        alt={deal.storeName}
-                        style={{ width: 24, height: 24 }}
-                      />
-                    </Tooltip>
-                  )}
-                  <Chip
-                    label={`-${Math.round(deal.savings)}%`}
-                    size="small"
-                    sx={{ bgcolor: "#3a3a3a", color: "limegreen" }}
-                  />
+                  <Typography variant="h6" color="limegreen">
+                    -{Math.round(deal.savings)}%
+                  </Typography>
+                  <Typography color="white">
+                    {parseFloat(deal.salePrice).toFixed(2)}€
+                  </Typography>
+                  <Typography
+                    sx={{
+                      textDecoration: "line-through",
+                      fontSize: "0.8rem",
+                      color: "#aaa",
+                    }}
+                  >
+                    {parseFloat(deal.normalPrice).toFixed(2)}€
+                  </Typography>
                 </Box>
               </Box>
-
-              <Box
-                sx={{
-                  px: 2,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  bgcolor: "#1b1b1b",
-                  minWidth: 90,
-                }}
-              >
-                <Typography variant="h6" color="limegreen">
-                  -{Math.round(deal.savings)}%
-                </Typography>
-                <Typography color="white">
-                  {parseFloat(deal.salePrice).toFixed(2)}€
-                </Typography>
-                <Typography
-                  sx={{
-                    textDecoration: "line-through",
-                    fontSize: "0.8rem",
-                    color: "#aaa",
-                  }}
-                >
-                  {parseFloat(deal.normalPrice).toFixed(2)}€
-                </Typography>
-              </Box>
-            </Box>
+            </a>
           </Grid>
         ))}
       </Grid>
