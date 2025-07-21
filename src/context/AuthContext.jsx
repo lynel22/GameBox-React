@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await getCurrentUser();
       setUser(res.data);
+      console.log("Usuario cargado:", res.data);
     } catch {
       setUser(null);
     } finally {
