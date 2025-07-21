@@ -12,7 +12,8 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Divider,
+  CardMedia,
+  Tooltip,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -20,10 +21,11 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import SteamLoginButton from "../components/SteamLoginButton";
 import { unlinkSteamAccount } from "../api/auth";
+import storeLogos from "../constants/storelogos";
 
 export default function UserProfile() {
   const navigate = useNavigate();
-  const { user, loading } = useAuth(); // user es UserProfileDto
+  const { user, loading } = useAuth();
   const [steamId, setSteamId] = useState(user?.steamId || null);
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -184,93 +186,119 @@ export default function UserProfile() {
             Tu Biblioteca ({user.totalGames})
           </Typography>
 
-          {user.games && user.games.length > 0 ? (
-            <Stack spacing={2}>
-              {user.games.map((game) => {
-                const achievementPercentage = game.totalAchievements
-                  ? (game.achievementsUnlocked / game.totalAchievements) * 100
-                  : 0;
+          {user.games.map((game) => {
+            const achievementPercentage = game.totalAchievements
+              ? (game.achievementsUnlocked / game.totalAchievements) * 100
+              : 0;
 
-                return (
-                  <Paper
-                    key={game.id}
+            return (
+              <Box
+                key={game.id}
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  bgcolor: "#2a2a2a",
+                  borderRadius: 2,
+                  mb: 3,
+                  overflow: "hidden",
+                  boxShadow: 2,
+                  position: "relative",
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  image={game.imageUrl || "/default-image.jpg"}
+                  alt={game.name}
+                  sx={{
+                    width: 250,
+                    height: 150,
+                    objectFit: "cover",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => navigate(`/game/${game.id}`)}
+                />
+
+                <Box sx={{ flex: 1, p: 2, position: "relative" }}>
+                  {/* Icono de la tienda arriba derecha */}
+                  <Box
                     sx={{
-                      backgroundColor: "#222",
-                      border: "1px solid #333",
-                      p: 2,
-                      borderRadius: 2,
+                      position: "absolute",
+                      top: 16,
+                      right: 16,
                       display: "flex",
-                      alignItems: "center",
-                      gap: 2,
+                      gap: 1,
                     }}
                   >
-                    <Avatar
-                      src={game.imageUrl}
-                      variant="rounded"
-                      sx={{ width: 140, height: 100 }}
-                    />
-                    <Box flex={1} textAlign="left">
-                      <Typography
-                        
-                        variant="h6"
-                        fontWeight="bold"
-                        component="a"
-                        href={`/game/${game.id}`}
+                    {game.storeName && storeLogos[game.storeName] && (
+                      <Tooltip title={game.storeName}>
+                        <img
+                          src={storeLogos[game.storeName]}
+                          alt={game.storeName}
+                          style={{ width: 24, height: 24 }}
+                        />
+                      </Tooltip>
+                    )}
+                  </Box>
+
+                  <Typography
+                    variant="h6"
+                    color="white"
+                    sx={{
+                      textAlign: "left",
+                      fontWeight: 500,
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                      "&:hover": {
+                        textDecoration: "underline",
+                      },
+                    }}
+                    onClick={() => navigate(`/game/${game.id}`)}
+                  >
+                    {game.name}
+                  </Typography>
+
+                  <Typography
+                    variant="body2"
+                    color="#aaa"
+                    sx={{ mt: 1, textAlign: "left" }}
+                  >
+                    {game.hoursPlayed.toFixed(1)} h jugadas
+                    {game.lastSession &&
+                      ` · Última sesión: ${new Date(
+                        game.lastSession
+                      ).toLocaleDateString()}`}
+                  </Typography>
+
+                  {/* Logros abajo izquierda */}
+                  <Box sx={{ position: "absolute", bottom: 16, left: 16, textAlign: "right" }}>
+                    <Typography variant="caption" sx={{fontSize: "0.9rem"}}  color="#aaa">
+                      Logros: {game.achievementsUnlocked}/
+                      {game.totalAchievements}
+                    </Typography>
+                    <Box
+                      sx={{
+                        mt: 0.5,
+                        height: 8,
+                        borderRadius: 5,
+                        backgroundColor: "#333",
+                        overflow: "hidden",
+                        width: 820,
+                      }}
+                    >
+                      <Box
                         sx={{
-                          color: "#fff",
-                          textDecoration: "none",
-                          textAlign: "left",
-                          display: "inline-block",
-                          "&:hover": {
-                            textDecoration: "underline",
-                            color: "#fff", // mantiene blanco al hacer hover
-                          },
+                          width: `${achievementPercentage}%`,
+                          height: "100%",
+                          backgroundColor: "#1D5ECF",
+                          transition: "width 0.3s ease-in-out",
                         }}
-                      >
-                        {game.name}
-                      </Typography>
-
-                      <Typography variant="body1" color="#aaa" textAlign="left">
-                        {game.hoursPlayed.toFixed(1)} h jugadas
-                        {game.lastSession &&
-                          ` · Última sesión: ${new Date(game.lastSession).toLocaleDateString()}`}
-                      </Typography>
-
-                      <Box mt={1} textAlign="right">
-                        <Typography variant="body2" color="#aaa">
-                          Logros: {game.achievementsUnlocked}/{game.totalAchievements}
-                        </Typography>
-                        <Box
-                          sx={{
-                            mt: 0.5,
-                            height: 8,
-                            borderRadius: 5,
-                            backgroundColor: "#333",
-                            overflow: "hidden",
-                          }}
-                        >
-                          <Box
-                            sx={{
-                              width: `${achievementPercentage}%`,
-                              height: "100%",
-                              backgroundColor: "#1D5ECF",
-                              transition: "width 0.3s ease-in-out",
-                            }}
-                          />
-                        </Box>
-                      </Box>
+                      />
                     </Box>
-                  </Paper>
-                );
-              })}
-            </Stack>
-          ) : (
-            <Typography variant="body2" color="#aaa">
-              Aún no has añadido juegos a tu biblioteca.
-            </Typography>
-          )}
-
-
+                  </Box>
+                </Box>
+              </Box>
+            );
+          })}
         </Box>
       </Box>
 
