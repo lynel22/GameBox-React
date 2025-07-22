@@ -23,6 +23,8 @@ import SteamLoginButton from "../components/SteamLoginButton";
 import { unlinkSteamAccount } from "../api/auth";
 import storeLogos from "../constants/storelogos";
 
+// ...importaciones sin cambios
+
 export default function UserProfile() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
@@ -55,7 +57,6 @@ export default function UserProfile() {
       <Box
         sx={{
           minHeight: "75vh",
-          background: "linear-gradient(135deg, #161616, #2a2a2a)",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -71,7 +72,6 @@ export default function UserProfile() {
       <Box
         sx={{
           minHeight: "75vh",
-          background: "linear-gradient(135deg, #161616, #2a2a2a)",
           color: "#fff",
           display: "flex",
           justifyContent: "center",
@@ -88,26 +88,21 @@ export default function UserProfile() {
 
   return (
     <>
-      {/* Cabecera del perfil */}
+      {/* Cabecera sin fondo especial */}
       <Box
         sx={{
-          background: "linear-gradient(135deg, #161616, #2a2a2a)",
           color: "#ffffff",
           px: 4,
-          py: 6,
+          py: 3,
           display: "flex",
           justifyContent: "center",
         }}
       >
-        <Paper
-          elevation={9}
+        <Box
           sx={{
-            backgroundColor: "#2a2a2a",
-            borderRadius: 4,
-            border: "1px solid #333",
             width: "100%",
             maxWidth: 1100,
-            p: 4,
+            p: 2,
             position: "relative",
           }}
         >
@@ -115,8 +110,8 @@ export default function UserProfile() {
             onClick={() => navigate("/edit-profile")}
             sx={{
               position: "absolute",
-              top: 16,
-              right: 16,
+              top: 20,
+              right: 10,
               color: "#fff",
               backgroundColor: "#1D5ECF",
               "&:hover": { backgroundColor: "#1A4DAF" },
@@ -169,20 +164,13 @@ export default function UserProfile() {
               </Box>
             </Box>
           </Stack>
-        </Paper>
+        </Box>
       </Box>
 
-      {/* Corte de color brusco para la biblioteca */}
-      <Box
-        sx={{
-          backgroundColor: "#1c1c1c",
-          color: "#ffffff",
-          px: 4,
-          py: 3,
-        }}
-      >
+      {/* Biblioteca sin corte ni fondo extra */}
+      <Box sx={{ px: 4, paddingBottom: 4, paddingTop: 1 }}>
         <Box sx={{ maxWidth: 1100, margin: "0 auto" }}>
-          <Typography variant="h6" sx={{ mb: 2 }}>
+          <Typography textAlign="left" paddingLeft={2} variant="h6" sx={{ mb: 2 , color: "#fff" }}>
             Tu Biblioteca ({user.totalGames})
           </Typography>
 
@@ -270,8 +258,19 @@ export default function UserProfile() {
                   </Typography>
 
                   {/* Logros abajo izquierda */}
-                  <Box sx={{ position: "absolute", bottom: 16, left: 16, textAlign: "right" }}>
-                    <Typography variant="caption" sx={{fontSize: "0.9rem"}}  color="#aaa">
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      bottom: 16,
+                      left: 16,
+                      textAlign: "right",
+                    }}
+                  >
+                    <Typography
+                      variant="caption"
+                      sx={{ fontSize: "0.9rem" }}
+                      color="#aaa"
+                    >
                       Logros: {game.achievementsUnlocked}/
                       {game.totalAchievements}
                     </Typography>
