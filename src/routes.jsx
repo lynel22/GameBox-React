@@ -13,6 +13,7 @@ import GameDetail from "./pages/GameDetail";
 import Layout from "./components/Layout";
 import Wishlist from "./pages/Wishlist";
 import Deals from "./pages/Deals";
+import Friends from "./pages/Friends";
 
 export default function AppRoutes() {
   return (
@@ -37,6 +38,7 @@ export default function AppRoutes() {
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/auth/steam/callback" element={<SteamCallback />} />
             <Route path="/game/:gameId" element={<GameDetail />} />
+            <Route path="/friends" element={<Friends />} />
           </Route>
         </Route>
 

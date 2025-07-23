@@ -30,6 +30,11 @@ export default function UserMenu() {
     handleClose();
   };
 
+  const handleFriends = () => {
+    navigate("/friends");
+    handleClose();
+  };
+
   const handleLogout = () => {
     logout();
     handleClose();
@@ -60,7 +65,7 @@ export default function UserMenu() {
   }
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 2 , backgroundColor: "#2a2a2a", borderRadius: 2, }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 2 , backgroundColor: "#2a2a2a", borderRadius: 2 }}>
       <IconButton
         onClick={handleOpen}
         sx={{
@@ -98,6 +103,7 @@ export default function UserMenu() {
         }}
       >
         <MenuItem onClick={handleProfile}>Perfil</MenuItem>
+        <MenuItem onClick={handleFriends}>Amigos</MenuItem>
         <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
       </Menu>
     </Box>

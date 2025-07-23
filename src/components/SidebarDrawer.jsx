@@ -142,13 +142,6 @@ export default function SidebarDrawer({ open, selectedLibrary, loadLibrary }) {
             <ListItemText primary="Ofertas" />
           </ListItemButton>
 
-          <ListItemButton>
-            <ListItemIcon>
-              <StarBorder sx={{ color: "#1D5ECF" }} />
-            </ListItemIcon>
-            <ListItemText primary="Favoritos" />
-          </ListItemButton>
-
         </List>
 
       </Box>
