@@ -406,7 +406,11 @@ export default function GameDetail() {
           <Box display="flex" gap={2} mt={1} flexWrap="wrap">
             {game.friendsThatOwnIt.map((friend, i) => (
               <Tooltip key={i} title={friend.username}>
-                <Avatar src={friend.imageUrl} />
+                <Avatar
+                  src={import.meta.env.VITE_API_URL + friend.imageUrl}
+                  alt={friend.username}
+                  sx={{ width: 60, height: 60, ml: 1 }} // o el tamaño que quieras
+                />
               </Tooltip>
             ))}
           </Box>
