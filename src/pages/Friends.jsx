@@ -15,9 +15,10 @@ import {
 } from "../api/friends";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 export default function Friends() {
-  const { user } = useAuth(); // ← obtenemos el usuario autenticado
+  const { user } = useAuth();
   const [friendCode, setFriendCode] = useState("");
   const [inputCode, setInputCode] = useState("");
   const [searchResult, setSearchResult] = useState(null);
@@ -62,7 +63,7 @@ export default function Friends() {
   const handleAddFriend = async (id) => {
     try {
       await addFriend(id);
-      fetchFriends(); 
+      fetchFriends();
       setSearchResult(null);
     } catch (err) {
       console.error("Error al añadir amigo:", err);
@@ -148,7 +149,10 @@ export default function Friends() {
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <Avatar src={import.meta.env.VITE_API_URL + user.imageUrl} alt={searchResult.username} />
+            <Avatar
+              src={import.meta.env.VITE_API_URL + searchResult.imageUrl}
+              alt={searchResult.username}
+            />
             <Typography color="white">{searchResult.username}</Typography>
           </Box>
           <Button
@@ -170,37 +174,45 @@ export default function Friends() {
           No tienes amigos añadidos todavía.
         </Typography>
       ) : (
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 2,
-          }}
-        >
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
           {friends.map((f) => (
-            <Card
+            <Link
+              to={`/profile/${f.id}`}
               key={f.id}
-              sx={{
-                bgcolor: "#2a2a2a",
-                p: 2,
-                display: "flex",
-                alignItems: "center",
-                gap: 2,
-                borderRadius: 2,
-                width: "calc(50% - 16px)", // 16px = gap
-              }}
+              style={{ textDecoration: "none", flex: "1 1 calc(50% - 16px)" }}
             >
-              <Avatar
-                src={import.meta.env.VITE_API_URL + f.imageUrl}
-                alt={f.username}
-                sx={{ width: 65, height: 65 }}
-              />
-              <Typography color="white" sx={{ fontSize: "1.3rem", ml: 1 }}>{f.username}</Typography>
-            </Card>
+              <Card
+                sx={{
+                  bgcolor: "#2a2a2a",
+                  p: 2,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  borderRadius: 2,
+                  width: "calc(50% - 16px)",
+                  transition: "transform 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.02)",
+                    cursor: "pointer",
+                  },
+                }}
+              >
+                <Avatar
+                  src={import.meta.env.VITE_API_URL + f.imageUrl}
+                  alt={f.username}
+                  sx={{ width: 65, height: 65 }}
+                />
+                <Typography
+                  color="white"
+                  sx={{ fontSize: "1.3rem", ml: 1 }}
+                >
+                  {f.username}
+                </Typography>
+              </Card>
+            </Link>
           ))}
         </Box>
       )}
-
     </Box>
   );
 }

@@ -3,7 +3,6 @@ import {
   Box,
   Avatar,
   Typography,
-  Paper,
   Stack,
   IconButton,
   CircularProgress,
@@ -17,23 +16,46 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import SteamLoginButton from "../components/SteamLoginButton";
 import { unlinkSteamAccount } from "../api/auth";
+import { getUserProfile } from "../api/user";
 import storeLogos from "../constants/storelogos";
 
-// ...importaciones sin cambios
-
 export default function UserProfile() {
-  const navigate = useNavigate();
-  const { user, loading } = useAuth();
-  const [steamId, setSteamId] = useState(user?.steamId || null);
+  const { user } = useAuth();
+  const { userId } = useParams();
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [steamId, setSteamId] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setSteamId(user?.steamId || null);
-  }, [user]);
+    const fetchProfile = async () => {
+      setLoading(true);
+      try {
+        if (userId) {
+          const res = await getUserProfile(userId);
+          setProfileData(res.data);
+          setSteamId(res.data.steamId || null);
+        } else if (user) {
+          setProfileData(user);
+          setSteamId(user.steamId || null);
+        }
+      } catch (error) {
+        console.error("❌ Error al cargar perfil:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [userId, user]);
+
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => setOpenDialog(false);
 
   const handleUnlinkSteam = async () => {
     try {
@@ -49,10 +71,7 @@ export default function UserProfile() {
     }
   };
 
-  const handleOpenDialog = () => setOpenDialog(true);
-  const handleCloseDialog = () => setOpenDialog(false);
-
-  if (loading) {
+  if (loading || !profileData) {
     return (
       <Box
         sx={{
@@ -67,28 +86,11 @@ export default function UserProfile() {
     );
   }
 
-  if (!user) {
-    return (
-      <Box
-        sx={{
-          minHeight: "75vh",
-          color: "#fff",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-        }}
-      >
-        <Typography variant="h6">
-          Debes iniciar sesión para ver tu perfil.
-        </Typography>
-      </Box>
-    );
-  }
+  const isOwn = user && user.id === profileData.id;
 
   return (
     <>
-      {/* Cabecera sin fondo especial */}
+      {/* Cabecera */}
       <Box
         sx={{
           color: "#ffffff",
@@ -106,19 +108,21 @@ export default function UserProfile() {
             position: "relative",
           }}
         >
-          <IconButton
-            onClick={() => navigate("/edit-profile")}
-            sx={{
-              position: "absolute",
-              top: 20,
-              right: 10,
-              color: "#fff",
-              backgroundColor: "#1D5ECF",
-              "&:hover": { backgroundColor: "#1A4DAF" },
-            }}
-          >
-            <EditIcon />
-          </IconButton>
+          {isOwn && (
+            <IconButton
+              onClick={() => navigate("/edit-profile")}
+              sx={{
+                position: "absolute",
+                top: 20,
+                right: 10,
+                color: "#fff",
+                backgroundColor: "#1D5ECF",
+                "&:hover": { backgroundColor: "#1A4DAF" },
+              }}
+            >
+              <EditIcon />
+            </IconButton>
+          )}
 
           <Stack
             direction={{ xs: "column", sm: "row" }}
@@ -126,55 +130,65 @@ export default function UserProfile() {
             alignItems="center"
           >
             <Avatar
-              src={import.meta.env.VITE_API_URL + user.imageUrl}
-              alt={user.username}
+              src={import.meta.env.VITE_API_URL + profileData.imageUrl}
+              alt={profileData.username}
               sx={{ width: 120, height: 120 }}
             />
             <Box flex={1}>
               <Typography textAlign="left" variant="h4" fontWeight="bold">
-                {user.username}
+                {profileData.username}
               </Typography>
               <Typography textAlign="left" variant="body2" color="#ccc" mt={1}>
-                {user.email}
+                {profileData.email}
               </Typography>
 
-              <Box mt={2} textAlign="left">
-                {steamId ? (
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Typography variant="body2">
-                      Cuenta de Steam vinculada: {steamId}
-                    </Typography>
-                    <IconButton
-                      onClick={handleOpenDialog}
-                      sx={{
-                        color: "#ff4d4f",
-                        backgroundColor: "#2a2a2a",
-                        "&:hover": {
-                          backgroundColor: "#ff4d4f",
-                          color: "#fff",
-                        },
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Stack>
-                ) : (
-                  <SteamLoginButton />
-                )}
-              </Box>
+              {!userId && (
+                <Box mt={2} textAlign="left">
+                  {steamId ? (
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Typography variant="body2">
+                        Cuenta de Steam vinculada: {steamId}
+                      </Typography>
+                      <IconButton
+                        onClick={handleOpenDialog}
+                        sx={{
+                          color: "#ff4d4f",
+                          backgroundColor: "#2a2a2a",
+                          "&:hover": {
+                            backgroundColor: "#ff4d4f",
+                            color: "#fff",
+                          },
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Stack>
+                  ) : (
+                    <SteamLoginButton />
+                  )}
+                </Box>
+              )}
+
             </Box>
           </Stack>
         </Box>
       </Box>
 
-      {/* Biblioteca sin corte ni fondo extra */}
+      {/* Biblioteca */}
       <Box sx={{ px: 4, paddingBottom: 4, paddingTop: 1 }}>
         <Box sx={{ maxWidth: 1100, margin: "0 auto" }}>
-          <Typography textAlign="left" paddingLeft={2} variant="h6" sx={{ mb: 2 , color: "#fff" }}>
-            Tu Biblioteca ({user.totalGames})
+          <Typography
+            textAlign="left"
+            paddingLeft={2}
+            variant="h6"
+            sx={{ mb: 2, color: "#fff" }}
+          >
+            {isOwn
+              ? "Tu Biblioteca"
+              : `Biblioteca de ${profileData.username}`} ({profileData.totalGames})
           </Typography>
 
-          {user.games.map((game) => {
+          {profileData.games.map((game) => {
             const achievementPercentage = game.totalAchievements
               ? (game.achievementsUnlocked / game.totalAchievements) * 100
               : 0;
@@ -207,7 +221,6 @@ export default function UserProfile() {
                 />
 
                 <Box sx={{ flex: 1, p: 2, position: "relative" }}>
-                  {/* Icono de la tienda arriba derecha */}
                   <Box
                     sx={{
                       position: "absolute",
@@ -257,7 +270,6 @@ export default function UserProfile() {
                       ).toLocaleDateString()}`}
                   </Typography>
 
-                  {/* Logros abajo izquierda */}
                   <Box
                     sx={{
                       position: "absolute",
@@ -301,7 +313,7 @@ export default function UserProfile() {
         </Box>
       </Box>
 
-      {/* Diálogo de desvinculación */}
+      {/* Diálogo para desvincular Steam */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle sx={{ textAlign: "center" }}>
           ¿Desvincular cuenta de Steam?

@@ -36,6 +36,7 @@ export default function AppRoutes() {
           <Route element={<RequireAuth />}>
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/profile/:userId" element={<UserProfile />} />
             <Route path="/auth/steam/callback" element={<SteamCallback />} />
             <Route path="/game/:gameId" element={<GameDetail />} />
             <Route path="/friends" element={<Friends />} />

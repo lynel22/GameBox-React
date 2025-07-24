@@ -24,6 +24,7 @@ import { addGameToWishlist, removeGameFromWishlist } from "../api/game";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import DialogActions from "@mui/material/DialogActions";
+import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 dayjs.locale("es");
@@ -406,15 +407,18 @@ export default function GameDetail() {
           <Box display="flex" gap={2} mt={1} flexWrap="wrap">
             {game.friendsThatOwnIt.map((friend, i) => (
               <Tooltip key={i} title={friend.username}>
-                <Avatar
-                  src={import.meta.env.VITE_API_URL + friend.imageUrl}
-                  alt={friend.username}
-                  sx={{ width: 60, height: 60, ml: 1 }} // o el tamaño que quieras
-                />
+                <Link to={`/profile?userId=${friend.id}`} style={{ textDecoration: "none" }}>
+                  <Avatar
+                    src={import.meta.env.VITE_API_URL + friend.imageUrl}
+                    alt={friend.username}
+                    sx={{ width: 60, height: 60, ml: 1, cursor: "pointer" }}
+                  />
+                </Link>
               </Tooltip>
             ))}
           </Box>
         </Box>
+
       </Box>
 
       {/* Dialogo: Descripción completa */}
