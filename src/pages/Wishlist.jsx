@@ -41,11 +41,18 @@ export default function Wishlist() {
     } else if (sortBy === "dateAdded") {
       return new Date(b.fechaAdicion) - new Date(a.fechaAdicion);
     } else if (sortBy === "price") {
-      return 0; // Placeholder: todos los juegos tienen precio fijo
+      const priceA = a.deals && a.deals.length > 0
+        ? Math.min(...a.deals.map((d) => d.salePrice))
+        : Infinity;
+      const priceB = b.deals && b.deals.length > 0
+        ? Math.min(...b.deals.map((d) => d.salePrice))
+        : Infinity;
+      return priceA - priceB;
     } else {
       return 0;
     }
   });
+
 
   const handleRemove = async (gameId) => {
     try {
