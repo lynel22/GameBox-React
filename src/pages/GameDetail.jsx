@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
+  Stack,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Button } from "@mui/material";
@@ -25,6 +26,8 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import DialogActions from "@mui/material/DialogActions";
 import { Link } from "react-router-dom";
+import { ThumbUp, ThumbDown } from "@mui/icons-material";
+import { submitReview } from "../api/game"; // Asegúrate de tener este método
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 dayjs.locale("es");
@@ -78,6 +81,41 @@ export default function GameDetail() {
         : [...prev, storeId]
     );
   };
+
+  const handleReview = async (recommended) => {
+    try {
+      if (game.userReview === recommended) return;
+
+      const prevUserReview = game.userReview;
+
+      await submitReview(game.id, recommended);
+
+      let newPositive = game.totalPositiveReviews;
+      let newNegative = game.totalNegativeReviews;
+
+      if (prevUserReview === true) {
+        newPositive -= 1;
+      } else if (prevUserReview === false) {
+        newNegative -= 1;
+      }
+
+      if (recommended === true) {
+        newPositive += 1;
+      } else {
+        newNegative += 1;
+      }
+
+      setGame({
+        ...game,
+        userReview: recommended,
+        totalPositiveReviews: newPositive,
+        totalNegativeReviews: newNegative,
+      });
+    } catch (error) {
+      console.error("Error al enviar la reseña:", error);
+    }
+  };
+
 
   return (
     <Box sx={{ px: { xs: 2, md: 6 }, pb: 6 }}>
@@ -174,76 +212,114 @@ export default function GameDetail() {
               />
             ))}
 
-            {/* Oferta destacada justo debajo de los géneros */}
-            {game.deals?.length > 0 && (
-              <Box mt={3}>
-                <a
-                  href={game.deals[0].dealLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ textDecoration: "none" }}
-                >
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    gap={2}
-                    sx={{
-                      bgcolor: "#2a2a2a",
-                      p: 2,
-                      borderRadius: 2,
-                      boxShadow: 2,
-                      width: "fit-content",
-                      cursor: "pointer",
-                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                      "&:hover": {
-                        transform: "scale(1.02)",
-                        boxShadow: 4,
-                      },
-                    }}
-                  >
-                    {/* Logo tienda */}
-                    {storeLogos[game.deals[0].storeName] && (
-                      <Tooltip title={game.deals[0].storeName}>
-                        <img
-                          src={storeLogos[game.deals[0].storeName]}
-                          alt={game.deals[0].storeName}
-                          style={{ width: 32, height: 32 }}
-                        />
-                      </Tooltip>
-                    )}
-
-                    {/* Precios */}
-                    <Box>
-                      <Typography
-                        variant="body2"
-                        color="limegreen"
-                        sx={{ fontWeight: 600 }}
-                      >
-                        -{Math.round(game.deals[0].savings)}%
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        sx={{ color: "white", fontWeight: 600, fontSize: "1rem" }}
-                      >
-                        {parseFloat(game.deals[0].salePrice).toFixed(2)}€
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          textDecoration: "line-through",
-                          color: "#aaa",
-                          fontSize: "0.8rem",
-                        }}
-                      >
-                        {parseFloat(game.deals[0].normalPrice).toFixed(2)}€
-                      </Typography>
-                    </Box>
-                  </Box>
-                </a>
-              </Box>
-            )}
-
           </Box>
+
+          {/* Reseñas */}
+          <Box mt={1} sx={{ textAlign: "left" }}>
+          <Typography sx={{ color: "#fff", fontWeight: "bold" }} gutterBottom>
+            Reseñas:
+            <Typography
+              component="span"
+              sx={{ color: "white", fontWeight: "normal", ml: 1 }}
+            >
+              {game.reviewSummaryText} ({game.recommendationPercentage}% positivas)
+            </Typography>
+          </Typography>
+
+          <Stack direction="row" spacing={2} mt={1}>
+            <Button
+              className="review-button"
+              variant={game.userReview === true ? "contained" : "outlined"}
+              startIcon={<ThumbUp />}
+              onClick={() => handleReview(true)}
+              disabled={!game.ownedByUser}
+            >
+              {`(${game.totalPositiveReviews})`}
+            </Button>
+
+            <Button
+              className="review-button"
+              variant={game.userReview === false ? "contained" : "outlined"}
+              startIcon={<ThumbDown />}
+              onClick={() => handleReview(false)}
+              disabled={!game.ownedByUser}
+            >
+              {`(${game.totalNegativeReviews})`}
+            </Button>
+
+          </Stack>
+        </Box>
+
+
+
+          {/* Oferta destacada */}
+          {game.deals?.length > 0 && (
+            <Box mt={3}>
+              <a
+                href={game.deals[0].dealLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap={2}
+                  sx={{
+                    bgcolor: "#2a2a2a",
+                    p: 2,
+                    borderRadius: 2,
+                    boxShadow: 2,
+                    width: "fit-content",
+                    cursor: "pointer",
+                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                    "&:hover": {
+                      transform: "scale(1.02)",
+                      boxShadow: 4,
+                    },
+                  }}
+                >
+                  {/* Logo tienda */}
+                  {storeLogos[game.deals[0].storeName] && (
+                    <Tooltip title={game.deals[0].storeName}>
+                      <img
+                        src={storeLogos[game.deals[0].storeName]}
+                        alt={game.deals[0].storeName}
+                        style={{ width: 32, height: 32 }}
+                      />
+                    </Tooltip>
+                  )}
+
+                  {/* Precios */}
+                  <Box>
+                    <Typography
+                      variant="body2"
+                      color="limegreen"
+                      sx={{ fontWeight: 600 }}
+                    >
+                      -{Math.round(game.deals[0].savings)}%
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ color: "white", fontWeight: 600, fontSize: "1rem" }}
+                    >
+                      {parseFloat(game.deals[0].salePrice).toFixed(2)}€
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        textDecoration: "line-through",
+                        color: "#aaa",
+                        fontSize: "0.8rem",
+                      }}
+                    >
+                      {parseFloat(game.deals[0].normalPrice).toFixed(2)}€
+                    </Typography>
+                  </Box>
+                </Box>
+              </a>
+            </Box>
+          )}
         </Box>
       </Box>
 
@@ -407,7 +483,7 @@ export default function GameDetail() {
           <Box display="flex" gap={2} mt={1} flexWrap="wrap">
             {game.friendsThatOwnIt.map((friend, i) => (
               <Tooltip key={i} title={friend.username}>
-                <Link to={`/profile?userId=${friend.id}`} style={{ textDecoration: "none" }}>
+                <Link to={`/profile/${friend.id}`} style={{ textDecoration: "none" }}>
                   <Avatar
                     src={import.meta.env.VITE_API_URL + friend.imageUrl}
                     alt={friend.username}

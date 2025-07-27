@@ -45,3 +45,10 @@ export const getDeals = (store) => {
   const query = store ? `?store=${encodeURIComponent(store)}` : "";
   return API.get(`/game/deals${query}`);
 };
+
+export const submitReview = (gameId, recommended) => {
+  return API.post("/game/review", {
+    gameId,
+    recommended,
+  });
+};

@@ -154,6 +154,23 @@ button:focus-visible {
   border-bottom-right-radius: 8px !important;
 }
 
+/* Estilos específicos para los botones de reseña */
+.review-button {
+  background-color: transparent !important;
+  color: #fff !important;
+  background-color: #1D5ECF !important;
+  border-radius: 8px !important;
+  transition: 0.1s ease-in-out;
+}
+
+.review-button.MuiButton-contained {
+  background-color: #fff !important;
+  color: #1D5ECF !important;
+  border: none !important;
+}
+
+
+
 
 /* Modo claro opcional
 @media (prefers-color-scheme: light) {
