@@ -265,7 +265,7 @@ export default function Wishlist() {
                 );
               })()
             ) : (
-              <Typography color="gray">Sin ofertas</Typography>
+              <Typography color="gray">Sin oferta</Typography>
             )}
           </Box>
 
