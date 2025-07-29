@@ -142,6 +142,14 @@ export default function SidebarDrawer({ open, selectedLibrary, loadLibrary }) {
             <ListItemText primary="Ofertas" />
           </ListItemButton>
 
+          <ListItemButton onClick={() => navigate("/recommendations")}>
+            <ListItemIcon>
+              <StarBorder sx={{ color: "#FFD700" }} />
+            </ListItemIcon>
+            <ListItemText primary="Para Ti" />
+          </ListItemButton>
+
+
         </List>
 
       </Box>

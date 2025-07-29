@@ -52,3 +52,7 @@ export const submitReview = (gameId, recommended) => {
     recommended,
   });
 };
+
+export const getRecommendations = () => {
+  return API.get("/game/recommendations");
+};

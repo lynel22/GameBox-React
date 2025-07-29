@@ -14,6 +14,7 @@ import Layout from "./components/Layout";
 import Wishlist from "./pages/Wishlist";
 import Deals from "./pages/Deals";
 import Friends from "./pages/Friends";
+import RecommendationsPage from "./pages/RecommendationsPage";
 
 export default function AppRoutes() {
   return (
@@ -40,6 +41,7 @@ export default function AppRoutes() {
             <Route path="/auth/steam/callback" element={<SteamCallback />} />
             <Route path="/game/:gameId" element={<GameDetail />} />
             <Route path="/friends" element={<Friends />} />
+            <Route path="/recommendations" element={<RecommendationsPage />} />
           </Route>
         </Route>
 
