@@ -156,7 +156,6 @@ button:focus-visible {
 
 /* Estilos específicos para los botones de reseña */
 .review-button {
-  background-color: transparent !important;
   color: #fff !important;
   background-color: #1D5ECF !important;
   border-radius: 8px !important;
